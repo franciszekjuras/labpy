@@ -8,13 +8,9 @@ class Server:
         self.read_termination = '\n'
         self.write_termination = '\n'
         self.port = 8001
-        class _EchoProcessor:
-            def process(self, msg):
-                return msg
-        self.processor = _EchoProcessor()
-        
+        self.processor = lambda msg : msg        
         self._sel = selectors.DefaultSelector()
-        self._buf = ""
+        self._buf = {}
 
     def accept_wrapper(self, sock):
         conn, addr = sock.accept()  # Should be ready to read
@@ -28,23 +24,25 @@ class Server:
 
     def service_connection(self, key, mask):
         sock = key.fileobj
-        data = key.data
+        data = key.data        
+        id = data.addr[0] + ':' + str(data.addr[1])
         if mask & selectors.EVENT_READ:
             try: recv_data = sock.recv(1024)  # Should be ready to read
             except ConnectionError:
-                print("Connection with", data.addr[0], "was aborted.")
+                print("Connection with", id, "was aborted.")
                 recv_data = None
             if recv_data:
-                msgs = self.parse_data(recv_data)
-                for msg in msgs:
-                    print("Received command from", data.addr[0])
-                    print(msg)
-                repl = self.process_data(msgs)
-                for rep in repl:
+                # print("Received:", recv_data)
+                msgs = self.parse_data(recv_data, id)
+                reps = self.process_data(msgs)
+                for msg, rep in zip(msgs, reps):
+                    print("From", id, "\n[Received]", msg, "\n[Replied ]", rep)
+                for rep in reps:
                     if rep:
                         sock.sendall((rep + self.write_termination).encode())
             else:
-                print("Closing connection to", data.addr)
+                print("Closing connection to", id)
+                self._buf.pop(id)
                 self._sel.unregister(sock)
                 sock.close()
         # if mask & selectors.EVENT_WRITE:
@@ -53,33 +51,21 @@ class Server:
         #         sent = sock.send(data.outb)  # Should be ready to write
         #         data.outb = data.outb[sent:]
 
-    def parse_data(self, data):
-        global buf 
-        self._buf += data.decode()
-        msgs = self._buf.split(self.read_termination)
-        buf = msgs[-1]
+    def parse_data(self, data, id):
+        self._buf[id] = self._buf.get(id,"") + data.decode()
+        msgs = self._buf[id].split(self.read_termination)
+        self._buf[id] = msgs[-1]
         return msgs[:-1]
 
     def process_data(self, msgs):
-        return [self.processor.process(msg) for msg in msgs]
-        # repl = []
-        # for msg in msgs:
-        #     print("Executing: " + msg)
-        #     repl.append("Sie robi")
-        # return repl
+        return [self.processor(msg) for msg in msgs]
 
-
-    # if len(sys.argv) != 3:
-    #     print("usage:", sys.argv[0], "<host> <port>")
-    #     sys.exit(1)
-
-    # host, port = sys.argv[1], int(sys.argv[2])
     def run(self):
         host = socket.gethostname()
         lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         lsock.bind((host, self.port))
         lsock.listen()
-        print("listening on", (host, self.port))
+        print("Listening on", (host, self.port))
         lsock.setblocking(False)
         self._sel.register(lsock, selectors.EVENT_READ, data=None)
 

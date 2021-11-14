@@ -17,7 +17,8 @@ class ScpiParser:
     def _execute_task(self, task):
         cmd, args = task
         if "" in cmd or "" in args:
-            print("Improper command: empty values in", task)
+            # print("Improper command: empty values in", task)
+            return
         cmd_lc = [c.lower() for c in cmd]
         cmd_full = [self._aliases.get(c, c) for c in cmd_lc]
         cmd_expand = ":".join(cmd_full)
@@ -39,6 +40,7 @@ class ScpiParser:
                 cmd = cmd[1:]
             cmd_tree = cmd[:-1]
             args = []
+            args_raw = args_raw.strip(",")
             if args_raw:
                 args = [arg.strip() for arg in args_raw.split(',')]
             tasks.append([cmd, args])
@@ -51,7 +53,7 @@ class ScpiParser:
             repl = self._execute_task(task)
             if repl:
                 repls.append(repl)
-        print(tasks)
+        # print(tasks)
         return ';'.join(repls)
 
 
