@@ -27,8 +27,10 @@ if(__name__ == "__main__"):
 
     if(len(sys.argv) > 1 and sys.argv[1] in ["--client", "-c"]):
         import socket
-
-        host = socket.gethostname()
+        if(len(sys.argv) > 2):
+            host = sys.argv[2]
+        else:
+            host = socket.gethostname()
         port = 8001
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
@@ -40,7 +42,10 @@ if(__name__ == "__main__"):
                 print('Received:\n' + data.decode())
                 sock.sendall("meas".encode())
                 sock.sendall(":wav".encode())
-                sock.sendall(" 2\n".encode())
+                sock.sendall(" 3\n".encode())
+                data = sock.recv(1024)
+                print('Received:\n' + data.decode())
+                sock.sendall("meas:freq 1, 2, 3\n".encode())
                 data = sock.recv(1024)
                 print('Received:\n' + data.decode())
             except ConnectionError as e:
