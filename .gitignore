@@ -1,5 +1,5 @@
 # ve*/
-# __pycache__/
+__pycache__/
 # *.patch
 /*
 /*/
