@@ -71,7 +71,7 @@ class Server:
 
         try:
             while True:
-                events = self._sel.select(timeout=None)
+                events = self._sel.select(timeout=1)
                 for key, mask in events:
                     if key.data is None:
                         self.accept_wrapper(key.fileobj)

@@ -45,6 +45,12 @@ class ScpiParser:
                 args = [arg.strip() for arg in args_raw.split(',')]
             tasks.append([cmd, args])
         return tasks
+
+    def _stringify(self, repl):
+        if isinstance(repl, list) or isinstance(repl, tuple):
+            return ','.join([str(v) for v in repl])
+        else:
+            return str(repl)            
         
     def process(self, data):
         tasks = self._parse(data)
@@ -52,7 +58,7 @@ class ScpiParser:
         for task in tasks:
             repl = self._execute_task(task)
             if repl:
-                repls.append(repl)
+                repls.append(self._stringify(repl))
         # print(tasks)
         return ';'.join(repls)
 
