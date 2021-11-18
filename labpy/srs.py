@@ -26,7 +26,7 @@ def _to_enum(v, Type):
     if isinstance(v, str):
         return Type[v.upper().replace(' ','_')]
     return Type(v)
-    
+
 class Srs:
 
     class Trigger(Enum):
