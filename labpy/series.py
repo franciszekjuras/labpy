@@ -1,3 +1,4 @@
+from __future__ import annotations
 import numpy as np
 from math import floor, inf, isclose, ceil
 
@@ -19,17 +20,23 @@ def find_idx(v, range):
 
 class Series:
 
-    def __init__(self, y: np.ndarray, x: np.ndarray):
+    def __init__(self, y: np.ndarray, x: np.ndarray | tuple | float, freq = None):
         _check_type(np.ndarray, y)
         if not isinstance(x, np.ndarray):
-            l, r = x
+            if freq:
+                l, r = x, x + freq * y.size
+            else:
+                l, r = x
             x = np.linspace(l, r, y.size, endpoint=False)
         if x.ndim != 1 or y.ndim != 1:
             raise ValueError(f"Arrays x (dim={x.ndim}), y (dim={y.ndim}) should be one-dimensional")
         if(x.size != y.size):
             raise ValueError(f"Arrays x (size={x.size}), y (size={y.size}) should be of equal size")
-        self._x = x
-        self._y = y
+        self._x: np.ndarray = x
+        self._y: np.ndarray = y
+
+    def copy(self):
+        return Series(self._y.copy(), self._x.copy())
 
     @property
     def x(self):
@@ -37,6 +44,13 @@ class Series:
     @property
     def y(self):
         return self._y
+    @y.setter
+    def y(self, y: np.ndarray):
+        _check_type(np.ndarray, y)
+        if(y.shape != self._x.shape):
+            raise ValueError(f"Array y (shape={y.shape}) should be of the same shape as x (shape={self._x.shape})")
+        self._y = y
+
     @property
     def range(self):
         return self._x[0], self._x[-1], self._x.size
@@ -45,22 +59,18 @@ class Series:
         r = self.range
         i0 = find_idx(x0, r)
         i1 = find_idx(x1, r)
-        xn = self._x[i0:i1]
-        yn = self._y[i0:i1]
-        return Series(yn, xn)
+        return Series(self._y[i0:i1], self._x[i0:i1])
+
+    def part(self, beg=0., end=1.):
+        s = self._y.size
+        r = (0., 1. , s + 1)
+        i0 = min(find_idx(beg, r), s)
+        i1 = min(find_idx(end, r), s)
+        return Series(self._y[i0:i1], self._x[i0:i1])
 
     def __repr__(self):
-        r = self.range
         return f"x = {self._x}\n"\
             f"y = {self._y}"
 
 if __name__ == "__main__":
-    y = np.linspace(0.,10.,20)**2
-    a = Series(y, (0, 1))
-    print(a)
-    # print(a.y)
-    # print(a.x)
-    print(a.slice(0, 0.12))
-    print(a.slice(0, 0.15))
-    print(a.slice(0, 0.1501))
-    print(a.slice(0.9, 1))
+    pass
