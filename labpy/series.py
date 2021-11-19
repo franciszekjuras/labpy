@@ -38,9 +38,19 @@ class Series:
     def copy(self):
         return Series(self._y.copy(), self._x.copy())
 
+    def decimate(self, samples: int = None, freq: float = None):
+        raise NotImplementedError()
+
     @property
     def x(self):
         return self._x
+    @x.setter
+    def x(self, x: np.ndarray):
+        _check_type(np.ndarray, x)
+        if(x.shape != self._y.shape):
+            raise ValueError(f"Array x (shape={x.shape}) should be of the same shape as y (shape={self._y.shape})")
+        self._x = x
+
     @property
     def y(self):
         return self._y
