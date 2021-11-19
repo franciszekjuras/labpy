@@ -24,7 +24,7 @@ class Series:
         _check_type(np.ndarray, y)
         if not isinstance(x, np.ndarray):
             if freq:
-                l, r = x, x + freq * y.size
+                l, r = x, x + (y.size / freq)
             else:
                 l, r = x
             x = np.linspace(l, r, y.size, endpoint=False)
