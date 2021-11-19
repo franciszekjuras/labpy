@@ -1,18 +1,18 @@
 import numpy as np
 from math import floor, inf, isclose, ceil
 
-def _check_type(types, vars):
+def _check_type(types, *vars):
     for v in vars:
         if not isinstance(v, types):
             raise TypeError(f"{type(v)} is not of type(s) {types}")
 
 def find_idx(v, range):
     l, r, s = range
-    if v <= l:
+    if v <= l or isclose(v, l):
         return 0
-    if v >= r:
+    if v > r and not isclose(v, r):
         return s
-    i: float = (v - l)/(r - l) * s
+    i: float = (v - l)/(r - l) * (s - 1)
     if isclose(i, round(i)):
         return int(i)
     return ceil(i)
@@ -20,9 +20,10 @@ def find_idx(v, range):
 class Series:
 
     def __init__(self, y: np.ndarray, x: np.ndarray):
+        _check_type(np.ndarray, y)
         if not isinstance(x, np.ndarray):
-            x = np.linspace(*x, endpoint=True)
-        _check_type(np.ndarray, x, y)
+            l, r = x
+            x = np.linspace(l, r, y.size, endpoint=False)
         if x.ndim != 1 or y.ndim != 1:
             raise ValueError(f"Arrays x (dim={x.ndim}), y (dim={y.ndim}) should be one-dimensional")
         if(x.size != y.size):
@@ -48,14 +49,18 @@ class Series:
         yn = self._y[i0:i1]
         return Series(yn, xn)
 
+    def __repr__(self):
+        r = self.range
+        return f"x = {self._x}\n"\
+            f"y = {self._y}"
+
 if __name__ == "__main__":
-    range = (0., 2., 2)
-    print(-inf, find_idx(-inf, range))
-    print(-0.1, find_idx(-0.1, range))
-    print(0.0, find_idx(0.0, range))
-    print(0.1, find_idx(0.1, range))
-    print(1., find_idx(1., range))
-    print(1.9, find_idx(1.9, range))
-    print(2.0, find_idx(2.0, range))
-    print(2.1, find_idx(2.1, range))
-    print(inf, find_idx(inf, range))
+    y = np.linspace(0.,10.,20)**2
+    a = Series(y, (0, 1))
+    print(a)
+    # print(a.y)
+    # print(a.x)
+    print(a.slice(0, 0.12))
+    print(a.slice(0, 0.15))
+    print(a.slice(0, 0.1501))
+    print(a.slice(0.9, 1))
