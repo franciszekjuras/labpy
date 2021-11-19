@@ -66,9 +66,10 @@ class Measurement:
     @time.setter
     def time(self, v):
         raise NotImplementedError
-    # @property
-    # def time_actual(self):
-        # return self._freq * self._samples
+
+    @property
+    def samples(self):
+        return self._samples
 
     def start(self):
         if self._running:
