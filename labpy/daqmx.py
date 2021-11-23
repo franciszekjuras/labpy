@@ -16,7 +16,9 @@ class Measurement:
         self._running = False
         self._dev = dev
         self._time = time
-        self._samples = int(time * freq)
+        self._freq = freq
+        self._t0 = t0
+        self._samples = int(self._time * self._freq)
         self._pre_samples = 0
         self._triggered = False
         # SetSampQuantSampPerChan(uInt64) # to change later number of samples
@@ -38,38 +40,10 @@ class Measurement:
             if t0 == 0:
                 self._task.CfgDigEdgeStartTrig(_dev_path_join(dev, trig), dmx.DAQmx_Val_Rising)
             else:
-                self._pre_samples = max(2, -t0 * freq)
+                self._pre_samples = max(2, -self._t0 * self._freq)
                 self._task.CfgDigEdgeRefTrig(_dev_path_join(dev, trig), dmx.DAQmx_Val_Rising, self._pre_samples)
 
         self._chs_n = _dmx_get(self._task.GetTaskNumChans, dmx.uInt32)
-        self._freq = _dmx_get(self._task.GetSampClkRate, dmx.float64)
-        self._t0 = -self._pre_samples / freq
-
-    @property
-    def freq(self):
-        return self._freq
-    @freq.setter
-    def freq(self, v):
-        raise NotImplementedError
-
-    @property
-    def t0(self):
-        return self._t0
-    @t0.setter
-    def t0(self, v):
-        raise NotImplementedError
-
-    @property
-    def time(self):
-        return self._freq * self._samples
-        # return self._time
-    @time.setter
-    def time(self, v):
-        raise NotImplementedError
-
-    @property
-    def samples(self):
-        return self._samples
 
     def start(self):
         if self._running:
@@ -89,3 +63,29 @@ class Measurement:
         self._task.ReadAnalogF64(self._samples, 3.0, dmx.DAQmx_Val_GroupByChannel, buf, buf.size, dmx.byref(dmx.int32()), None)
         self._task.StopTask()
         return data
+
+    @property
+    def freq(self):
+        return _dmx_get(self._task.GetSampClkRate, dmx.float64)
+    @freq.setter
+    def freq(self, v):
+        raise NotImplementedError
+
+    @property
+    def t0(self):
+        return self._pre_samples / self.freq
+    @t0.setter
+    def t0(self, v):
+        raise NotImplementedError
+
+    @property
+    def time(self):
+        return self.samples / self.freq
+        # return self._time
+    @time.setter
+    def time(self, v):
+        raise NotImplementedError
+
+    @property
+    def samples(self):
+        return self._samples

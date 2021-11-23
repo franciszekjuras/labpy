@@ -51,6 +51,10 @@ class Series:
         raise NotImplementedError()
 
     @property
+    def xy(self):
+        return (self._x, self._y)
+
+    @property
     def x(self):
         return self._x
     @x.setter
