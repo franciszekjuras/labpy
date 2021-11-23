@@ -30,10 +30,11 @@ class ArduinoPulseGen:
     class TimeUnit(Enum):
         CYCLE, US, MS, S = 0, 1, 2, 3
 
-    def __init__(self, rm: pyvisa.ResourceManager, name, useNiMaxSettings = True, portmap = {}):
+    def __init__(self, rm: pyvisa.ResourceManager, name: str, useNiMaxSettings = True, portmap = {}):
         access_mode = 4 if useNiMaxSettings else 0
         self._res = rm.open_resource(name, access_mode=access_mode, write_termination='\n', read_termination='\n')
         self.portmap = portmap
+        self.reset_full()
 
     def _map_ch(self, ch):
         if isinstance(ch, str):
@@ -50,7 +51,12 @@ class ArduinoPulseGen:
     @time_unit.setter
     def time_unit(self, v):
         unit_str = _to_enum(v, self.TimeUnit).name.lower()
-        self._res.write("syst:unit " + unit_str + ";syst:unit:store")
+        self._res.write("syst:unit " + unit_str)
+
+    def time_unit_store(self):
+        self._res.write("syst:unit:store")
+    # def time_unit_recall(self):
+    #     self._res.write("syst:unit:rec")
 
     def set(self, val, *chs):
         if len(chs) == 1 and not isinstance(chs[0], str):
@@ -71,23 +77,32 @@ class ArduinoPulseGen:
     def off(self, *chs):
         self.set(False, *chs)
 
-    def add(self, ch, *pulses):
+    def add(self, chs, *pulses):
         if len(pulses) == 1 and not isinstance(pulses[0], str):
             pulses = pulses[0]
         pulses_str = ','.join([_floatify(v) for v in pulses])
-        self._res.write("puls " + self._map_ch(ch) + ',' + pulses_str)
+        if isinstance(chs, (str, int)):
+            chs = (chs,)
+        for ch in chs:
+            self._res.write("puls " + self._map_ch(ch) + ',' + pulses_str)
 
-    def xadd(self, ch, *pulses):
+    def xadd(self, chs, *pulses):
         if len(pulses) == 1 and not isinstance(pulses[0], str):
             pulses = pulses[0]
         pulses_str = ','.join([_floatify(v) for v in pulses])
-        self._res.write("puls:xadd " + self._map_ch(ch) + ',' + pulses_str)
+        if isinstance(chs, (str, int)):
+            chs = (chs,)
+        for ch in chs:
+            self._res.write("puls:xadd " + self._map_ch(ch) + ',' + pulses_str)
 
     def reset(self, ch=None):
         if ch:
             self._res.write("puls:reset " + self._map_ch(ch))
         else:
             self._res.write("puls:reset")
+
+    def reset_full(self, ch=None):
+            self._res.write("*rst")
 
     def run(self):
         self._res.write("puls:run")

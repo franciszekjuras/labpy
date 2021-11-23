@@ -71,8 +71,12 @@ class Srs:
     FilterSlopeInv = {v: k for k, v in FilterSlope.items()}
 
 
-    def __init__(self, visa_resource):
-        self._res = visa_resource
+    def __init__(self, rm: pyvisa.ResourceManager, name: str):
+        self._res = rm.open_resource(name, write_termination='\n', read_termination='\n')
+
+    def setup(self, attrs: dict):
+        for key, value in attrs.items():
+            setattr(self, key, value)
 
     @property
     def identity(self):
