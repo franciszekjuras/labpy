@@ -58,42 +58,38 @@ class ArduinoPulseGen:
     # def time_unit_recall(self):
     #     self._res.write("syst:unit:rec")
 
-    def set(self, val, *chs):
-        if len(chs) == 1 and not isinstance(chs[0], str):
-            chs = chs[0]
+    def set(self, val, chs):
+        if isinstance(chs, (int, str)):
+            chs = (chs,)
         chs_str = ','.join([self._map_ch(ch) for ch in chs])
         cmd = "outp:on " if bool(val) else "outp:off "
         self._res.write(cmd + chs_str)
 
-    def xon(self, *chs):
-        if len(chs) == 1 and not isinstance(chs[0], str):
-            chs = chs[0]
+    def xon(self, *chs):        
+        if isinstance(chs, (int, str)):
+            chs = (chs,)
         chs_str = ','.join([self._map_ch(ch) for ch in chs])
         self._res.write("outp:xon " + chs_str)
 
-    def on(self, *chs):
-        self.set(True, *chs)
+    def on(self, chs):
+        self.set(True, chs)
 
-    def off(self, *chs):
-        self.set(False, *chs)
+    def off(self, chs = ()):
+        self.set(False, chs)
 
-    def add(self, chs, *pulses):
-        if len(pulses) == 1 and not isinstance(pulses[0], str):
-            pulses = pulses[0]
+    def _add(self, chs, pulses, ver):
+        if isinstance(pulses, (float, int)):
+            pulses = (pulses,)
         pulses_str = ','.join([_floatify(v) for v in pulses])
         if isinstance(chs, (str, int)):
             chs = (chs,)
         for ch in chs:
-            self._res.write("puls " + self._map_ch(ch) + ',' + pulses_str)
+            self._res.write("puls:" + ver + ' ' + self._map_ch(ch) + ',' + pulses_str)
+    def add(self, chs, pulses):
+        self._add(chs, pulses, ver="add")
 
-    def xadd(self, chs, *pulses):
-        if len(pulses) == 1 and not isinstance(pulses[0], str):
-            pulses = pulses[0]
-        pulses_str = ','.join([_floatify(v) for v in pulses])
-        if isinstance(chs, (str, int)):
-            chs = (chs,)
-        for ch in chs:
-            self._res.write("puls:xadd " + self._map_ch(ch) + ',' + pulses_str)
+    def xadd(self, chs, pulses):
+        self._add(chs, pulses, ver="xadd")
 
     def reset(self, ch=None):
         if ch:
@@ -101,8 +97,9 @@ class ArduinoPulseGen:
         else:
             self._res.write("puls:reset")
 
-    def reset_full(self, ch=None):
+    def reset_full(self):
             self._res.write("*rst")
+            self._res.write("outp:off") #Quick fix, remove after updating Duo
 
     def run(self):
         self._res.write("puls:run")

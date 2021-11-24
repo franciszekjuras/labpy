@@ -22,9 +22,8 @@ def from2darray(y2d: np.ndarray, *args):
     if(y2d.ndim != 2):
         raise ValueError("y2d array should be two-dimensional")
     nrow = y2d.shape[0]
-    y0 = Series(y2d[0], *args)
-    x = y0.x
-    return y0 + [Series(y2d[i], x) for i in range(1, nrow)]
+    x = Series(y2d[0], *args).x
+    return [Series(y2d[i], x) for i in range(0, nrow)]
 
 
 class Series:

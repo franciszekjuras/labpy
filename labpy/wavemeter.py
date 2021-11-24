@@ -9,7 +9,8 @@ def _check_type(types, *vars):
 class Wavemeter:
 
     def __init__(self, rm: pyvisa.ResourceManager, computer_name: str = "DESKTOP-HPSND6H", port: int = 8001):
-        self._res = rm.open_resource("::".join(("TCPIP", computer_name, str(port), "SOCKET")), write_termination='\n', read_termination='\n')
+        res_name = "::".join(("TCPIP", computer_name, str(port), "SOCKET"))
+        self._res = rm.open_resource(res_name, write_termination='\n', read_termination='\n')
 
     @property
     def identity(self):
