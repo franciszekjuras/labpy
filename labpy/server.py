@@ -14,6 +14,8 @@ class Server:
 
     def accept_wrapper(self, sock):
         conn, addr = sock.accept()  # Should be ready to read
+        id = addr[0] + ':' + str(addr[1])
+        self._buf[id] = ""
         print("Accepted connection from", addr)
         conn.setblocking(False)
         data = types.SimpleNamespace(addr=addr, inb=b"", outb=b"")
@@ -24,7 +26,7 @@ class Server:
 
     def service_connection(self, key, mask):
         sock = key.fileobj
-        data = key.data        
+        data = key.data
         id = data.addr[0] + ':' + str(data.addr[1])
         if mask & selectors.EVENT_READ:
             try: recv_data = sock.recv(1024)  # Should be ready to read
@@ -42,7 +44,7 @@ class Server:
                         sock.sendall((rep + self.write_termination).encode())
             else:
                 print("Closing connection to", id)
-                self._buf.pop(id)
+                del self._buf[id]
                 self._sel.unregister(sock)
                 sock.close()
         # if mask & selectors.EVENT_WRITE:
@@ -52,7 +54,7 @@ class Server:
         #         data.outb = data.outb[sent:]
 
     def parse_data(self, data, id):
-        self._buf[id] = self._buf.get(id,"") + data.decode()
+        self._buf[id] = self._buf[id] + data.decode()
         msgs = self._buf[id].split(self.read_termination)
         self._buf[id] = msgs[-1]
         return msgs[:-1]

@@ -50,8 +50,13 @@ class ScpiParser:
         if isinstance(repl, list) or isinstance(repl, tuple):
             return ','.join([str(v) for v in repl])
         else:
+<<<<<<< HEAD
             return str(repl)            
         
+=======
+            return str(repl)
+
+>>>>>>> origin/main
     def process(self, data):
         tasks = self._parse(data)
         repls = []
@@ -65,7 +70,7 @@ class ScpiParser:
 
 def _echo(args):
     return ','.join(args)
-        
+
 if(__name__ == "__main__"):
     parser = ScpiParser()
     parser.register("MEASure?", _echo)
