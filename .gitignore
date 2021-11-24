@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-ve*/
-__pycache__/
-*.patch
-=======
 # ve*/
 __pycache__/
 # *.patch
@@ -11,4 +6,3 @@ __pycache__/
 !/labpy/
 !/programs/
 !.gitignore
->>>>>>> origin/main
