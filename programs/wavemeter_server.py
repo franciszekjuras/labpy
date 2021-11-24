@@ -17,22 +17,6 @@ lib.GetFrequencyNum.argtypes = [ctypes.c_long, ctypes.c_double]
 def identify(args):
     return "LabPy,Wavemeter,NA,v21.11a"
 
-# def get_wavelength(ch):
-#     if ch not in range(1, 8 + 1):
-#         return 0.
-#     wav = lib.GetWavelengthNum(ch)
-#     if(wav < 0):
-#         return 0.
-#     return wav
-
-# def get_wavelength(ch):
-#     if ch not in range(1, 8 + 1):
-#         return 0.
-#     wav = lib.GetWavelengthNum(ch)
-#     if(wav < 0):
-#         return 0.
-#     return wav
-
 def sanitize_channels(args):
     channels = []
     for arg in args:
@@ -57,17 +41,6 @@ def measure_wavelength(args):
     
 def measure_frequency(args):
     return measure(args, fun=lib.GetFrequencyNum)
-
-# def measure_wavelegnth(args):
-#     res = []
-#     for i_s in args:
-#         try:
-#             i = int(i_s)
-#             if(i >= 0 and i <= 8):
-#                 res.append(get_wavelength(i))
-#         except ValueError:
-#             pass
-#     return ','.join(res)
 
 if(__name__ == "__main__"):
 
