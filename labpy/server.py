@@ -67,12 +67,12 @@ class Server:
         lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         lsock.bind((host, self.port))
         lsock.listen()
-        print("Listening on", (host, self.port))
         lsock.setblocking(False)
         self._sel.register(lsock, selectors.EVENT_READ, data=None)
 
         try:
             while True:
+                print("Listening on", (host, self.port))
                 events = self._sel.select(timeout=1)
                 for key, mask in events:
                     if key.data is None:
