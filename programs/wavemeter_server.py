@@ -38,7 +38,7 @@ def measure(args, fun):
 
 def measure_wavelength(args):
     return measure(args, fun=lib.GetWavelengthNum)
-
+    
 def measure_frequency(args):
     return measure(args, fun=lib.GetFrequencyNum)
 
@@ -47,7 +47,7 @@ if(__name__ == "__main__"):
     if (len(sys.argv) > 1 and sys.argv[1] in ["--test", "-t"]):
         print(measure_wavelength(["1", "2", "3", "bubel"]))
         print(measure_frequency(["1", "2", "3", "bubel"]))
-
+        
     elif(len(sys.argv) > 1 and sys.argv[1] in ["--client", "-c"]):
         import socket
 
