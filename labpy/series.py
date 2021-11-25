@@ -94,5 +94,21 @@ class Series:
         return f"x = {self._x}\n"\
             f"y = {self._y}"
 
-if __name__ == "__main__":
-    pass
+class Average:
+
+    def __init__(self, v = None):
+        self.sum = v
+        self.count = 0 if v == None else 1
+
+    def add(self, v):
+        if self.count == 0:
+            self.sum = v
+        else:
+            self.sum += v
+        self.count += 1
+
+    @property
+    def value(self):
+        if self.count == 0:
+            return 0.
+        return self.sum / self.count

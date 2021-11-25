@@ -45,6 +45,10 @@ class ArduinoPulseGen:
     def identity(self):
         return self._res.query("*IDN?")
 
+    def status(self, debug: bool = False):
+        com = "puls? -l" if debug else "puls?"
+        return self._res.query(com)
+
     @property
     def time_unit(self):
         return self._res.query("syst:unit?")
@@ -65,7 +69,7 @@ class ArduinoPulseGen:
         cmd = "outp:on " if bool(val) else "outp:off "
         self._res.write(cmd + chs_str)
 
-    def xon(self, *chs):        
+    def xon(self, chs):
         if isinstance(chs, (int, str)):
             chs = (chs,)
         chs_str = ','.join([self._map_ch(ch) for ch in chs])
@@ -99,7 +103,7 @@ class ArduinoPulseGen:
 
     def reset_full(self):
             self._res.write("*rst")
-            self._res.write("outp:off") #Quick fix, remove after updating Duo
+            # self._res.write("outp:off") #Quick fix, remove after updating Duo
 
     def run(self):
         self._res.write("puls:run")

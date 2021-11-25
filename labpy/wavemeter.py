@@ -8,7 +8,7 @@ def _check_type(types, *vars):
 
 class Wavemeter:
 
-    def __init__(self, rm: pyvisa.ResourceManager, computer_name: str = "DESKTOP-HPSND6H", port: int = 8001):
+    def __init__(self, rm: pyvisa.ResourceManager, computer_name: str = "Wavemeter", port: int = 8001):
         res_name = "::".join(("TCPIP", computer_name, str(port), "SOCKET"))
         self._res = rm.open_resource(res_name, write_termination='\n', read_termination='\n')
 

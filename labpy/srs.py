@@ -71,8 +71,10 @@ class Srs:
     FilterSlopeInv = {v: k for k, v in FilterSlope.items()}
 
 
-    def __init__(self, rm: pyvisa.ResourceManager, name: str):
+    def __init__(self, rm: pyvisa.ResourceManager, name: str, auxout_map = {}, auxin_map = {}):
         self._res = rm.open_resource(name, write_termination='\n', read_termination='\n')
+        self.auxout_map = auxout_map
+        self.auxin_map = auxin_map
 
     def setup(self, attrs: dict):
         for key, value in attrs.items():
@@ -157,10 +159,18 @@ class Srs:
             raise ValueError(f"{e.name} is not a demodulated channel")
         return self._res.query("OUTP? " + str(e.value))
 
-    def aux(self, num):
+    def auxin(self, num):
         if not isinstance(num, int) or not num in range(1, 4+1):
             raise ValueError(f"{num} is not an integer from 1 to 4")
         return self._res.query("OAUX? " + str(num))
+
+    def auxout(self, num: int, value: float = None):        
+        if not isinstance(num, int) or not num in range(1, 4+1):
+            raise ValueError(f"{num} is not an integer from 1 to 4")
+        if value == None:
+            return self._res.query("AUXV? " + str(num))
+        else:
+            self._res.write("AUXV " + str(num) + ',' + _floatify(value, 3))
 
     @property
     def x(self):
