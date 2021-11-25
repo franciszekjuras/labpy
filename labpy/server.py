@@ -73,7 +73,7 @@ class Server:
         try:
             while True:
                 print("Listening on", (host, self.port))
-                events = self._sel.select(timeout=1)
+                events = self._sel.select()
                 for key, mask in events:
                     if key.data is None:
                         self.accept_wrapper(key.fileobj)
