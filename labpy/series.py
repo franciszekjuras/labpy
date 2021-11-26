@@ -97,12 +97,12 @@ class Series:
 class Average:
 
     def __init__(self, v = None):
-        self.sum = v
-        self.count = 0 if v == None else 1
+        self.sum = v * 1.
+        self.count = 0 if v is None else 1
 
     def add(self, v):
         if self.count == 0:
-            self.sum = v
+            self.sum = v * 1.
         else:
             self.sum += v
         self.count += 1
