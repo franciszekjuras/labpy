@@ -46,6 +46,9 @@ class Series:
     def copy(self):
         return Series(self._y.copy(), self._x.copy())
 
+    def copy_y(self):
+        return Series(self._y.copy(), self._x)
+
     def decimate(self, samples: int = None, freq: float = None):
         raise NotImplementedError()
 
@@ -94,10 +97,19 @@ class Series:
         return f"x = {self._x}\n"\
             f"y = {self._y}"
 
+def _assignop_helper(inst, other, op):
+    inst.y = getattr(inst.y, op)(other)
+    return inst
+for op in ["__" + op + "__" for op in ["add", "sub", "mul", "truediv"]]:
+    setattr(Series, op, lambda self, other, c_op=op : Series(getattr(self.y, c_op)(other), self.x))
+for op in ["__" + op + "__" for op in ["iadd", "isub", "imul", "idiv"]]:
+    setattr(Series, op, lambda self, other, c_op=op : _assignop_helper(self, other, c_op))
+
 class Average:
 
     def __init__(self, v = None):
-        self.sum = v * 1.
+        if v is not None:
+            self.sum = v * 1.
         self.count = 0 if v is None else 1
 
     def add(self, v):

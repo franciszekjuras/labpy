@@ -98,3 +98,7 @@ class Measurement:
     @property
     def samples(self):
         return self._samples
+
+    @property
+    def chs_n(self):
+        return self._chs_n
