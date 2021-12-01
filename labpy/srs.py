@@ -144,9 +144,7 @@ class Srs:
     def filter_slope(self, v):
         self._res.write("OFSL " + str(self.FilterSlope[v]))
 
-    def snap(self, *params):
-        if len(params) == 1:
-            params = params[0]
+    def snap(self, params):
         if not len(params) in range (2, 6+1):
             raise ValueError(f"Min. 2, max. 6 values can be snapped at once (not {len(params)})")
         params_str = [str(_to_enum(p, self.Input).value) for p in params]
@@ -160,14 +158,18 @@ class Srs:
         return self._res.query("OUTP? " + str(e.value))
 
     def auxin(self, num):
+        if isinstance(num, str):
+            num = self.auxin_map[num]
         if not isinstance(num, int) or not num in range(1, 4+1):
             raise ValueError(f"{num} is not an integer from 1 to 4")
         return self._res.query("OAUX? " + str(num))
 
-    def auxout(self, num: int, value: float = None):        
+    def auxout(self, num: int, value: float = None):
+        if isinstance(num, str):
+            num = self.auxout_map[num]     
         if not isinstance(num, int) or not num in range(1, 4+1):
             raise ValueError(f"{num} is not an integer from 1 to 4")
-        if value == None:
+        if value is None:
             return self._res.query("AUXV? " + str(num))
         else:
             self._res.write("AUXV " + str(num) + ',' + _floatify(value, 3))
