@@ -1,6 +1,7 @@
 from __future__ import annotations
 import numpy as np
 from math import floor, inf, isclose, ceil
+import pickle
 
 def _check_type(types, *vars):
     for v in vars:
@@ -22,25 +23,27 @@ def from2darray(y2d: np.ndarray, *args):
     if(y2d.ndim != 2):
         raise ValueError("y2d array should be two-dimensional")
     nrow = y2d.shape[0]
-    x = Series(y2d[0], *args).x
+    x = calc_x(y2d[0], *args)
     return [Series(y2d[i], x) for i in range(0, nrow)]
 
+def calc_x(y: np.ndarray, x: np.ndarray | tuple | float, freq = None):
+    _check_type(np.ndarray, y)
+    if not isinstance(x, np.ndarray):
+        if freq:
+            l, r = x, x + (y.size / freq)
+        else:
+            l, r = x
+        x = np.linspace(l, r, y.size, endpoint=False)
+    if x.ndim != 1 or y.ndim != 1:
+        raise ValueError(f"Arrays x (dim={x.ndim}), y (dim={y.ndim}) should be one-dimensional")
+    if(x.size != y.size):
+        raise ValueError(f"Arrays x (size={x.size}), y (size={y.size}) should be of equal size")
+    return x
 
 class Series:
 
     def __init__(self, y: np.ndarray, x: np.ndarray | tuple | float, freq = None):
-        _check_type(np.ndarray, y)
-        if not isinstance(x, np.ndarray):
-            if freq:
-                l, r = x, x + (y.size / freq)
-            else:
-                l, r = x
-            x = np.linspace(l, r, y.size, endpoint=False)
-        if x.ndim != 1 or y.ndim != 1:
-            raise ValueError(f"Arrays x (dim={x.ndim}), y (dim={y.ndim}) should be one-dimensional")
-        if(x.size != y.size):
-            raise ValueError(f"Arrays x (size={x.size}), y (size={y.size}) should be of equal size")
-        self._x: np.ndarray = x
+        self._x: np.ndarray = calc_x(y, x, freq)
         self._y: np.ndarray = y
 
     def copy(self):

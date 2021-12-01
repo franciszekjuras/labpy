@@ -37,7 +37,7 @@ class KeithleyCS:
             raise ValueError(f"count ({count}) should be a positive integer")
         self._res.write("SOUR:SWE:SPAC LIST")
         self._res.write("SOUR:SWE:RANG BEST")
-        self._res.write("SOUR:LIST:CURR " + ','.join([_floatify(c, 3) for c in currents]))
+        self._res.write("SOUR:LIST:CURR " + ','.join([_floatify(c, 9) for c in currents]))
         self._res.write("SOUR:LIST:DEL " + ','.join(['1e-3'] * len(currents)))
         self._res.write("SOUR:LIST:COMP " + ','.join(['10'] * len(currents)))
         self._res.write("SOUR:SWE:COUN " + _intify(count))

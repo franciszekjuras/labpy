@@ -45,7 +45,6 @@ class Measurement:
             self._task.CfgDigEdgeStartTrig(_dev_path_join(self._dev, trig), dmx.DAQmx_Val_Rising)
         else:
             self._pre_samples = int(max(2, -t0 * self._freq))
-            print(*(_dev_path_join(self._dev, trig), dmx.DAQmx_Val_Rising, self._pre_samples))
             self._task.CfgDigEdgeRefTrig(_dev_path_join(self._dev, trig), dmx.DAQmx_Val_Rising, self._pre_samples)
 
 
@@ -55,7 +54,7 @@ class Measurement:
         self._running = True
         self._task.StartTask()
 
-    def read(self):
+    def read(self, timeout=2.):
         if not self._running:
             if self._triggered:
                 raise ValueError("Measurement not running. Use start() before read()")
@@ -64,7 +63,7 @@ class Measurement:
         data = np.zeros((self._chs_n, self._samples), dtype=np.float64)
         buf = data.ravel()
         # ReadAnalogF64(numSampsPerChan=int, timeout=float[sec], fillMode=enum, readArray=numpy.array, arraySizeInSamps=int, sampsPerChanRead=int_p, None);
-        self._task.ReadAnalogF64(self._samples, 3.0, dmx.DAQmx_Val_GroupByChannel, buf, buf.size, dmx.byref(dmx.int32()), None)
+        self._task.ReadAnalogF64(self._samples, float(timeout), dmx.DAQmx_Val_GroupByChannel, buf, buf.size, dmx.byref(dmx.int32()), None)
         self._task.StopTask()
         self._running = False
         return data
