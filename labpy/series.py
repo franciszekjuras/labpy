@@ -55,6 +55,19 @@ class Series:
     def decimate(self, samples: int = None, freq: float = None):
         raise NotImplementedError()
 
+    def rfft(self):
+        f_y = np.fft.rfft(self._x)
+        d = abs(self._y[1] - self._y[0])
+        f_x = np.fft.rfftfreq(self._x.size, d)
+        return Series(f_y, f_x)
+
+    def fft(self):
+        f_y = np.fft.fft(self._x)
+        d = abs(self._y[1] - self._y[0])
+        f_x = np.fft.fftfreq(self._x.size, d)
+        return Series(f_y, f_x)
+
+
     @property
     def xy(self):
         return (self._x, self._y)
@@ -100,13 +113,30 @@ class Series:
         return f"x = {self._x}\n"\
             f"y = {self._y}"
 
+# def _assignop_helper(inst, other, op):
+#     inst.y = getattr(inst.y, op)(other)
+#     return inst
+# for op in ["__" + op + "__" for op in ["add", "sub", "mul", "truediv"]]:
+#     setattr(Series, op, lambda self, other, c_op=op : Series(getattr(self._y, c_op)(other), self._x))
+# for op in ["__" + op + "__" for op in ["iadd", "isub", "imul", "idiv"]]:
+#     setattr(Series, op, lambda self, other, c_op=op : _assignop_helper(self, other, c_op))
+
 def _assignop_helper(inst, other, op):
     inst.y = getattr(inst.y, op)(other)
     return inst
+def _gen_op_y(op):
+    return lambda self, other : Series(getattr(self._y, op)(other), self._x)
+def _gen_assignop_y(op):
+    return lambda self, other : _assignop_helper(self, other, op)
 for op in ["__" + op + "__" for op in ["add", "sub", "mul", "truediv"]]:
-    setattr(Series, op, lambda self, other, c_op=op : Series(getattr(self.y, c_op)(other), self.x))
+    setattr(Series, op, _gen_op_y(op))
 for op in ["__" + op + "__" for op in ["iadd", "isub", "imul", "idiv"]]:
-    setattr(Series, op, lambda self, other, c_op=op : _assignop_helper(self, other, c_op))
+    setattr(Series, op, _gen_assignop_y(op))
+
+def _gen_np_apply(fun):
+    return lambda self: Series(getattr(np, fun)(self._y), self._x)
+for fun in ["abs", "real", "imag", "angle"]:
+    setattr(Series, fun, _gen_np_apply(fun))
 
 class Average:
 
