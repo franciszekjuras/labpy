@@ -1,7 +1,9 @@
 from __future__ import annotations
 import numpy as np
 from math import floor, inf, isclose, ceil
-import pickle
+from statsmodels.tsa.ar_model import AutoReg
+from statsmodels.tsa.ar_model import ar_select_order
+import scipy.signal as dsp
 
 def _check_type(types, *vars):
     for v in vars:
@@ -55,18 +57,36 @@ class Series:
     def decimate(self, samples: int = None, freq: float = None):
         raise NotImplementedError()
 
-    def rfft(self):
-        f_y = np.fft.rfft(self._x)
-        d = abs(self._y[1] - self._y[0])
-        f_x = np.fft.rfftfreq(self._x.size, d)
-        return Series(f_y, f_x)
-
     def fft(self):
-        f_y = np.fft.fft(self._x)
-        d = abs(self._y[1] - self._y[0])
-        f_x = np.fft.fftfreq(self._x.size, d)
-        return Series(f_y, f_x)
+        real = np.isrealobj(self._y)
+        ft = np.fft.rfft if real else np.fft.fft
+        ftfreq = np.fft.rfftfreq if real else np.fft.fftfreq
+        d = abs(self._x[1] - self._x[0])
+        return Series(ft(self._y), ftfreq(self._x.size, d))
 
+    def filter(self, ker):
+            return Series(dsp.convolve(self._y, ker, mode='same'), self._x)
+
+    def project(self, t0, lag=None, forward=False, taps=None, trend='n'):
+        ret = self.copy_y()    
+        p1, p2 = ret.split(t0)
+        if forward:
+            train = p1.y
+            to_pred = p2.y
+        else:
+            train = p2.y[::-1]
+            to_pred = p1.y[::-1]
+        if lag is None and taps is None:
+            lag = ar_select_order(train, maxlag=50, trend=trend, ic='hqic').ar_lags
+            print(lag)
+        elif taps is not None:
+            lag = taps
+        else:
+            lag = int(lag * self.freq)
+        fit = AutoReg(train, lags=lag, trend=trend).fit()
+        print(fit.params)
+        to_pred[:] = fit.model.predict(fit.params, start=train.size, end=train.size + to_pred.size -1)
+        return ret
 
     @property
     def xy(self):
@@ -95,12 +115,34 @@ class Series:
     @property
     def range(self):
         return self._x[0], self._x[-1], self._x.size
+    
+    @property
+    def dx(self):
+        return abs(self._x[1] - self._x[0])
 
-    def slice(self, x0=-inf, x1=inf):
-        r = self.range
-        i0 = find_idx(x0, r)
-        i1 = find_idx(x1, r)
+    @property
+    def freq(self):
+        return 1./abs(self._x[1] - self._x[0])
+
+    def apply(self, fun):
+        return Series(fun(self._x), self._x)
+
+    def slice(self, l=-inf, r=inf, rel=False):
+        rng = self.range
+        if rel:
+            l = rng[0] + l if l >= 0. else rng[1] + l + self.dx
+            r = rng[1] + self.dx + r if r <= 0. else rng[0] + r
+        i0 = find_idx(l, rng)
+        i1 = find_idx(r, rng)
         return Series(self._y[i0:i1], self._x[i0:i1])
+
+    def split(self, s, rel=False):        
+        rng = self.range
+        if rel:
+            s = rng[0] + s if s >= 0. else rng[1] + s + self.dx
+        i = find_idx(s, rng)
+        x, y = self._x, self._y
+        return Series(y[:i], x[:i]), Series(y[i:], x[i:])
 
     def part(self, beg=0., end=1.):
         s = self._y.size
@@ -110,28 +152,24 @@ class Series:
         return Series(self._y[i0:i1], self._x[i0:i1])
 
     def __repr__(self):
-        return f"x = {self._x}\n"\
-            f"y = {self._y}"
+        return f"D = {self.range} y = {self._y}"
 
-# def _assignop_helper(inst, other, op):
-#     inst.y = getattr(inst.y, op)(other)
-#     return inst
-# for op in ["__" + op + "__" for op in ["add", "sub", "mul", "truediv"]]:
-#     setattr(Series, op, lambda self, other, c_op=op : Series(getattr(self._y, c_op)(other), self._x))
-# for op in ["__" + op + "__" for op in ["iadd", "isub", "imul", "idiv"]]:
-#     setattr(Series, op, lambda self, other, c_op=op : _assignop_helper(self, other, c_op))
+    def _op_helper(self, other, op):
+        if isinstance(other, Series):
+            if(self.range != other.range):
+                raise ValueError(f"Series' ranges should be equal, are {self.range} and {other.range}")
+            other = other.y
+        if op.startswith('__i'):
+            self.y = getattr(self._y, op)(other)
+            return self
+        else:
+            return Series(getattr(self._y, op)(other), self._x)
 
-def _assignop_helper(inst, other, op):
-    inst.y = getattr(inst.y, op)(other)
-    return inst
-def _gen_op_y(op):
-    return lambda self, other : Series(getattr(self._y, op)(other), self._x)
-def _gen_assignop_y(op):
-    return lambda self, other : _assignop_helper(self, other, op)
-for op in ["__" + op + "__" for op in ["add", "sub", "mul", "truediv"]]:
-    setattr(Series, op, _gen_op_y(op))
-for op in ["__" + op + "__" for op in ["iadd", "isub", "imul", "idiv"]]:
-    setattr(Series, op, _gen_assignop_y(op))
+def _gen_op(op):
+    return lambda self, other : self._op_helper(other, op)
+for op in ["__" + op + "__" for op 
+in ["add", "sub", "mul", "truediv", "iadd", "isub", "imul", "idiv"]]:
+    setattr(Series, op, _gen_op(op))
 
 def _gen_np_apply(fun):
     return lambda self: Series(getattr(np, fun)(self._y), self._x)
