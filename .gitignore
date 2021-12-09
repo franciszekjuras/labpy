@@ -6,3 +6,4 @@ __pycache__/
 !/labpy/
 !/programs/
 !.gitignore
+/*_test.py
