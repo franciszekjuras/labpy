@@ -1,1 +1,2 @@
-__version__ = '0.1.1.dev'
+import importlib.metadata
+__version__ = importlib.metadata.version('labpy')
