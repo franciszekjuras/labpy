@@ -1,9 +1,5 @@
-# ve*/
+/.*/
+/ve*/
 __pycache__/
-# *.patch
-/*
-/*/
-!/labpy/
-!/programs/
-!.gitignore
+/*.patch
 /*_test.py

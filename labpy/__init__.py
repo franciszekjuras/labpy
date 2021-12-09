@@ -1,1 +1,1 @@
-__all__ = ['server', 'scpi_parser']
+__version__ = '0.1.0'

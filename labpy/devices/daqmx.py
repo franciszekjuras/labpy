@@ -10,7 +10,7 @@ def _dmx_get(getter, type):
     getter(dmx.byref(var))
     return var.value
 
-class Measurement:
+class DAQmx:
 
     def __init__(self, dev: str = "Dev1", channels: str | tuple = (),  freq=1000., time=0.01, trig: str = None, t0 = 0.):
         self._running = False
