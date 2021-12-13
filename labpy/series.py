@@ -10,42 +10,10 @@ def _check_type(types, *vars):
         if not isinstance(v, types):
             raise TypeError(f"{type(v)} is not of type(s) {types}")
 
-def find_idx(v, range):
-    l, r, s = range
-    if v <= l or isclose(v, l):
-        return 0
-    if v > r and not isclose(v, r):
-        return s
-    i: float = (v - l)/(r - l) * (s - 1)
-    if isclose(i, round(i)):
-        return int(i)
-    return ceil(i)
-
-def from2darray(y2d: np.ndarray, *args):
-    if(y2d.ndim != 2):
-        raise ValueError("y2d array should be two-dimensional")
-    nrow = y2d.shape[0]
-    x = calc_x(y2d[0], *args)
-    return [Series(y2d[i], x) for i in range(0, nrow)]
-
-def calc_x(y: np.ndarray, x: np.ndarray | tuple | float, freq = None):
-    _check_type(np.ndarray, y)
-    if not isinstance(x, np.ndarray):
-        if freq:
-            l, r = x, x + (y.size / freq)
-        else:
-            l, r = x
-        x = np.linspace(l, r, y.size, endpoint=False)
-    if x.ndim != 1 or y.ndim != 1:
-        raise ValueError(f"Arrays x (dim={x.ndim}), y (dim={y.ndim}) should be one-dimensional")
-    if(x.size != y.size):
-        raise ValueError(f"Arrays x (size={x.size}), y (size={y.size}) should be of equal size")
-    return x
-
 class Series:
 
     def __init__(self, y: np.ndarray, x: np.ndarray | tuple | float, freq = None):
-        self._x: np.ndarray = calc_x(y, x, freq)
+        self._x: np.ndarray = Series.calc_x(y, x, freq)
         self._y: np.ndarray = y
 
     def copy(self):
@@ -132,23 +100,23 @@ class Series:
         if rel:
             l = rng[0] + l if l >= 0. else rng[1] + l + self.dx
             r = rng[1] + self.dx + r if r <= 0. else rng[0] + r
-        i0 = find_idx(l, rng)
-        i1 = find_idx(r, rng)
+        i0 = Series.find_idx(l, rng)
+        i1 = Series.find_idx(r, rng)
         return Series(self._y[i0:i1], self._x[i0:i1])
 
     def split(self, s, rel=False):        
         rng = self.range
         if rel:
             s = rng[0] + s if s >= 0. else rng[1] + s + self.dx
-        i = find_idx(s, rng)
+        i = Series.find_idx(s, rng)
         x, y = self._x, self._y
         return Series(y[:i], x[:i]), Series(y[i:], x[i:])
 
     def part(self, beg=0., end=1.):
         s = self._y.size
         r = (0., 1. , s + 1)
-        i0 = min(find_idx(beg, r), s)
-        i1 = min(find_idx(end, r), s)
+        i0 = min(Series.find_idx(beg, r), s)
+        i1 = min(Series.find_idx(end, r), s)
         return Series(self._y[i0:i1], self._x[i0:i1])
 
     def __repr__(self):
@@ -164,6 +132,41 @@ class Series:
             return self
         else:
             return Series(getattr(self._y, op)(other), self._x)
+
+    @staticmethod
+    def find_idx(v, range):
+        l, r, s = range
+        if v <= l or isclose(v, l):
+            return 0
+        if v > r and not isclose(v, r):
+            return s
+        i: float = (v - l)/(r - l) * (s - 1)
+        if isclose(i, round(i)):
+            return int(i)
+        return ceil(i)
+
+    @staticmethod
+    def from2darray(y2d: np.ndarray, *args):
+        if(y2d.ndim != 2):
+            raise ValueError("y2d array should be two-dimensional")
+        nrow = y2d.shape[0]
+        x = Series.calc_x(y2d[0], *args)
+        return [Series(y2d[i], x) for i in range(0, nrow)]
+
+    @staticmethod
+    def calc_x(y: np.ndarray, x: np.ndarray | tuple | float, freq = None):
+        _check_type(np.ndarray, y)
+        if not isinstance(x, np.ndarray):
+            if freq:
+                l, r = x, x + (y.size / freq)
+            else:
+                l, r = x
+            x = np.linspace(l, r, y.size, endpoint=False)
+        if x.ndim != 1 or y.ndim != 1:
+            raise ValueError(f"Arrays x (dim={x.ndim}), y (dim={y.ndim}) should be one-dimensional")
+        if(x.size != y.size):
+            raise ValueError(f"Arrays x (size={x.size}), y (size={y.size}) should be of equal size")
+        return x
 
 def _gen_op(op):
     return lambda self, other : self._op_helper(other, op)

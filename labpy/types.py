@@ -1,5 +1,3 @@
-from copy import deepcopy
-
 class DataList(list):
     def __getitem__(self, idx):
         if isinstance(idx, str):
@@ -31,6 +29,13 @@ class IndexedProperty:
 
 class NestedDict(dict):
 
+    @staticmethod
+    def _recursive_copy(dic):
+        for k, v in dic.items():
+            if isinstance(v, dict):
+                dic[k] = v.copy()
+                NestedDict._recursive_copy(dic[k])
+
     def _resolve_path(self, path, create=False):
         parent = self
         path = list(path)
@@ -42,11 +47,18 @@ class NestedDict(dict):
         return parent, last
 
     def __init__(self, dict={}):
-        super().__init__(deepcopy(dict))
+        super().__init__(dict)
+        NestedDict._recursive_copy(self)
         self.shadow = {}
 
+
+    def copy(self):
+        return NestedDict(self)
+
     def __getitem__(self, idx):
-        if isinstance(idx, (list, tuple)):
+        if isinstance(idx, list):
+            idx = tuple(idx)
+        if isinstance(idx, tuple):
             if idx in self.shadow:
                 return self.shadow[idx]
             else:
@@ -72,4 +84,4 @@ class NestedDict(dict):
         else:
             return super().__repr__() + '\nshadow: ' + self.shadow.__repr__()
 
-from .series import Series
+from .series import Series, Average

@@ -71,10 +71,12 @@ class Srs:
     FilterSlopeInv = {v: k for k, v in FilterSlope.items()}
 
 
-    def __init__(self, rm: pyvisa.ResourceManager, name: str, auxout_map = {}, auxin_map = {}):
-        self._res = rm.open_resource(name, write_termination='\n', read_termination='\n')
+    def __init__(self, rm: pyvisa.ResourceManager, dev='Lock-in',
+                 auxout_map = {}, auxin_map = {}, settings={}, **ignored):
+        self._res = rm.open_resource(dev, write_termination='\n', read_termination='\n')
         self.auxout_map = auxout_map
         self.auxin_map = auxin_map
+        self.setup(settings)
 
     def setup(self, attrs: dict):
         for key, value in attrs.items():

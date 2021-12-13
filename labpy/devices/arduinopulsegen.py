@@ -30,11 +30,13 @@ class ArduinoPulseGen:
     class TimeUnit(Enum):
         CYCLE, US, MS, S = 0, 1, 2, 3
 
-    def __init__(self, rm: pyvisa.ResourceManager, name: str, useNiMaxSettings = True, portmap = {}):
+    def __init__(self, rm: pyvisa.ResourceManager, name: str, useNiMaxSettings = True,
+            portmap = {}, time_unit=None, **ignored):
         access_mode = 4 if useNiMaxSettings else 0
         self._res = rm.open_resource(name, access_mode=access_mode, write_termination='\n', read_termination='\n')
-        self.portmap = portmap
         self.reset_full()
+        self.portmap = portmap
+        self.time_unit = time_unit
 
     def _map_ch(self, ch):
         if isinstance(ch, str):

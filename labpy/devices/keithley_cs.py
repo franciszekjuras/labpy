@@ -17,8 +17,8 @@ def _intify(v):
     raise TypeError(f"Variable of type {type(v)} is not an integer" )
 
 class KeithleyCS:
-    def __init__(self, rm: pyvisa.ResourceManager, name: str):
-        self._res = rm.open_resource(name, write_termination='\n', read_termination='\n')
+    def __init__(self, rm: pyvisa.ResourceManager, dev='KEITHLEY'):
+        self._res = rm.open_resource(dev, write_termination='\n', read_termination='\n')
         self._res.write("*RST")
 
     @property
