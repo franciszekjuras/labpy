@@ -166,7 +166,7 @@ class Srs:
             raise ValueError(f"{num} is not an integer from 1 to 4")
         return self._res.query("OAUX? " + str(num))
 
-    def auxout(self, num: int, value: float = None):
+    def auxout(self, num, value: float = None):
         if isinstance(num, str):
             num = self.auxout_map[num]     
         if not isinstance(num, int) or not num in range(1, 4+1):

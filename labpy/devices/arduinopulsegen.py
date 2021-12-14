@@ -64,7 +64,7 @@ class ArduinoPulseGen:
     # def time_unit_recall(self):
     #     self._res.write("syst:unit:rec")
 
-    def set(self, val, chs):
+    def set_ch(self, val, chs):
         if isinstance(chs, (int, str)):
             chs = (chs,)
         chs_str = ','.join([self._map_ch(ch) for ch in chs])
@@ -78,10 +78,10 @@ class ArduinoPulseGen:
         self._res.write("outp:xon " + chs_str)
 
     def on(self, chs):
-        self.set(True, chs)
+        self.set_ch(True, chs)
 
     def off(self, chs = ()):
-        self.set(False, chs)
+        self.set_ch(False, chs)
 
     def _add(self, chs, pulses, ver):
         if isinstance(pulses, (float, int)):
@@ -109,8 +109,6 @@ class ArduinoPulseGen:
 
     def run(self):
         self._res.write("puls:run")
-
-
 
 if __name__ == "__main__":
     visa = pyvisa.ResourceManager()
