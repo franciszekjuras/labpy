@@ -46,12 +46,14 @@ class DAQmx:
         self._running = True
         self._task.StartTask()
 
-    def read(self, timeout=2.):
+    def read(self, timeout=None):
         if not self._running:
             if self._triggered:
                 raise ValueError("Measurement not running. Use start() before read()")
             else:
                 self.start()
+        if timeout is None:
+            timeout = self.time + 1.
         data = np.zeros((self._chs_n, self._samples), dtype=np.float64)
         buf = data.ravel()
         # ReadAnalogF64(numSampsPerChan=int, timeout=float[sec], fillMode=enum, readArray=numpy.array, arraySizeInSamps=int, sampsPerChanRead=int_p, None);
@@ -59,6 +61,9 @@ class DAQmx:
         self._task.StopTask()
         self._running = False
         return data
+
+    def space(self):
+        return np.linspace(self.t0, self.time + self.t0, self.samples, endpoint=False)
 
     @property
     def freq(self):
