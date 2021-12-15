@@ -1,12 +1,12 @@
 import pyvisa
 
 class TB3000AomDriver:
-    def __init__(self, rm: pyvisa.ResourceManager, name: str, use_nimax_settings = True):
+    def __init__(self, rm: pyvisa.ResourceManager, dev: str, use_nimax_settings = True, **ignored):
         if use_nimax_settings:
             kwargs = {'access_mode': 4}
         else:
             kwargs = {'baud_rate': 19200}
-        self._res = rm.open_resource(name, **kwargs, write_termination='\n', read_termination='\n')
+        self._res = rm.open_resource(dev, **kwargs, write_termination='\n', read_termination='\n')
 
     @property
     def identity(self):

@@ -1,6 +1,5 @@
 import pyvisa
 
-
 def _floatify(v, precision=6):
     if isinstance(v, int):
         return (str(v) + '.0')
@@ -17,7 +16,7 @@ def _intify(v):
     raise TypeError(f"Variable of type {type(v)} is not an integer" )
 
 class KeithleyCS:
-    def __init__(self, rm: pyvisa.ResourceManager, dev='KEITHLEY'):
+    def __init__(self, rm: pyvisa.ResourceManager, dev='KEITHLEY', **ignored):
         self._res = rm.open_resource(dev, write_termination='\n', read_termination='\n')
         self._res.write("*RST")
 

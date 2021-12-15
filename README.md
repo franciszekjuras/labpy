@@ -18,7 +18,7 @@ pip install https://github.com/franciszekjuras/labpy/tarball/master#[devices]
 ```
 If you want to modify the package source code it's convenient to install it in developer mode. In order to do this:
 - create and activate a [virtual environment](https://docs.python.org/3/library/venv.html),
--  clone or download repo from github,
+- clone or download repo from github,
 - navigate to its main directory (the one in which this `README.md` resides),
 - execute: `pip install -e .[devices]`
 - now you can use `import labpy` freely and any changes to source code will be visible without reinstallation

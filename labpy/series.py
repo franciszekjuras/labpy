@@ -1,9 +1,6 @@
 from __future__ import annotations
 import numpy as np
 from math import floor, inf, isclose, ceil
-from statsmodels.tsa.ar_model import AutoReg
-from statsmodels.tsa.ar_model import ar_select_order
-import scipy.signal as dsp
 
 def _check_type(types, *vars):
     for v in vars:
@@ -24,37 +21,6 @@ class Series:
 
     def decimate(self, samples: int = None, freq: float = None):
         raise NotImplementedError()
-
-    def fft(self):
-        real = np.isrealobj(self._y)
-        ft = np.fft.rfft if real else np.fft.fft
-        ftfreq = np.fft.rfftfreq if real else np.fft.fftfreq
-        d = abs(self._x[1] - self._x[0])
-        return Series(ft(self._y), ftfreq(self._x.size, d))
-
-    def filter(self, ker):
-            return Series(dsp.convolve(self._y, ker, mode='same'), self._x)
-
-    def project(self, t0, lag=None, forward=False, taps=None, trend='n'):
-        ret = self.copy_y()    
-        p1, p2 = ret.split(t0)
-        if forward:
-            train = p1.y
-            to_pred = p2.y
-        else:
-            train = p2.y[::-1]
-            to_pred = p1.y[::-1]
-        if lag is None and taps is None:
-            lag = ar_select_order(train, maxlag=50, trend=trend, ic='hqic').ar_lags
-            print(lag)
-        elif taps is not None:
-            lag = taps
-        else:
-            lag = int(lag * self.freq)
-        fit = AutoReg(train, lags=lag, trend=trend).fit()
-        print(fit.params)
-        to_pred[:] = fit.model.predict(fit.params, start=train.size, end=train.size + to_pred.size -1)
-        return ret
 
     @property
     def xy(self):
