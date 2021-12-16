@@ -2,7 +2,7 @@
 /ve*/
 __pycache__/
 /*.patch
-/*_test.py
+/*test.py
 /*.egg-info/
 /dist/
 /build/

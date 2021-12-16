@@ -86,6 +86,8 @@ class ArduinoPulseGen:
     def _add(self, chs, pulses, ver):
         if isinstance(pulses, (float, int)):
             pulses = (pulses,)
+        if len(pulses) == 0:
+            return
         pulses_str = ','.join([_floatify(v) for v in pulses])
         if isinstance(chs, (str, int)):
             chs = (chs,)

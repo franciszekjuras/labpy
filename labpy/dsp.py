@@ -1,0 +1,36 @@
+from .series import Series
+import numpy as np
+from statsmodels.tsa.ar_model import AutoReg
+from statsmodels.tsa.ar_model import ar_select_order
+from scipy import signal
+
+def fft(ser):
+        real = np.isrealobj(ser._y)
+        ft = np.fft.rfft if real else np.fft.fft
+        ftfreq = np.fft.rfftfreq if real else np.fft.fftfreq
+        d = abs(ser._x[1] - ser._x[0])
+        return Series(ft(ser._y), ftfreq(ser._x.size, d))
+
+def filter(ser, ker):
+        return Series(signal.convolve(ser._y, ker, mode='same'), ser._x)
+
+def project(ser, t0, lag=None, forward=False, taps=None, trend='n'):
+    ret = ser.copy_y()
+    p1, p2 = ret.split(t0)
+    if forward:
+        train = p1.y
+        to_pred = p2.y
+    else:
+        train = p2.y[::-1]
+        to_pred = p1.y[::-1]
+    if lag is None and taps is None:
+        lag = ar_select_order(train, maxlag=50, trend=trend, ic='hqic').ar_lags
+        print(lag)
+    elif taps is not None:
+        lag = taps
+    else:
+        lag = int(lag * ser.freq)
+    fit = AutoReg(train, lags=lag, trend=trend).fit()
+    print(fit.params)
+    to_pred[:] = fit.model.predict(fit.params, start=train.size, end=train.size + to_pred.size -1)
+    return ret
