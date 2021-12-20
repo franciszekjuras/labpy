@@ -48,3 +48,9 @@ def to_enum(v, Type):
     if isinstance(v, str):
         return Type[v.upper().replace(' ','_')]
     return Type(v)
+
+def list_visa_devices(rm):
+    res = [(str(inst.alias), str(inst.resource_name)) for inst in rm.list_resources_info().values()]
+    res.insert(0, ("Alias", "Resource name"))
+    for el in res:
+        print(f"{el[0]:>15}  {el[1]}")
