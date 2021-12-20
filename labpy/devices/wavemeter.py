@@ -1,10 +1,6 @@
 from __future__ import annotations
 import pyvisa
-
-def _check_type(types, *vars):
-    for v in vars:
-        if not isinstance(v, types):
-            raise TypeError(f"{type(v)} is not of type(s) {types}")
+from ..utils import check_type
 
 class Wavemeter:
 
@@ -19,7 +15,7 @@ class Wavemeter:
     def _measure(self, channels: int | tuple, what: str):
         if isinstance(channels, int):
             channels = (channels,)
-        _check_type((int), *channels)
+        check_type((int), *channels)
         resp: str = self._res.query("meas:" + what + ' ' + ','.join([str(ch) for ch in channels]))
         vals = [float(v) for v in resp.split(",")]
         if len(vals) == 1:

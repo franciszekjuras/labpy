@@ -1,19 +1,5 @@
 import pyvisa
-
-def _floatify(v, precision=6):
-    if isinstance(v, int):
-        return (str(v) + '.0')
-    if isinstance(v, float):
-        if v.is_integer():
-            return str(v)
-        return (f"{v:.{precision}f}".rstrip('0'))
-    raise TypeError(f"Variable of type {type(v)} is not a float" )
-
-
-def _intify(v):
-    if isinstance(v, int):
-        return str(v)
-    raise TypeError(f"Variable of type {type(v)} is not an integer" )
+from ..utils import floatify, intify
 
 class KeithleyCS:
     def __init__(self, rm: pyvisa.ResourceManager, dev='KEITHLEY', **ignored):

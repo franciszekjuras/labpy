@@ -53,7 +53,7 @@ class DAQmx:
             else:
                 self.start()
         if timeout is None:
-            timeout = self.time + 1.
+            timeout = self.time + 10.
         data = np.zeros((self._chs_n, self._samples), dtype=np.float64)
         buf = data.ravel()
         # ReadAnalogF64(numSampsPerChan=int, timeout=float[sec], fillMode=enum, readArray=numpy.array, arraySizeInSamps=int, sampsPerChanRead=int_p, None);

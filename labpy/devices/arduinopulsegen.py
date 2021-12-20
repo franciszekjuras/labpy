@@ -1,29 +1,6 @@
 import pyvisa
 from enum import Enum
-
-def _intify(v):
-    if isinstance(v, int):
-        return str(v)
-    if isinstance(v, float):
-        if v.is_integer():
-            return str(int(v))
-        else:
-            raise ValueError(f"{v} is not an exact integer")
-    raise TypeError(f"Variable of type {type(v)} is not an integer" )
-
-def _floatify(v, precision=8):
-    if isinstance(v, int):
-        return (str(v) + '.0')
-    if isinstance(v, float):
-        if v.is_integer():
-            return str(v)
-        return (f"{v:.{precision}f}".rstrip('0'))
-    raise TypeError(f"Variable of type {type(v)} is not a float" )
-
-def _to_enum(v, Type):
-    if isinstance(v, str):
-        return Type[v.upper().replace(' ','_')]
-    return Type(v)
+from ..utils import floatify, intify, to_enum
 
 class ArduinoPulseGen:
 
@@ -31,7 +8,7 @@ class ArduinoPulseGen:
         CYCLE, US, MS, S = 0, 1, 2, 3
 
     def __init__(self, rm: pyvisa.ResourceManager, dev: str, useNiMaxSettings = True,
-            portmap = {}, time_unit=None, **ignored):
+            portmap = {}, time_unit='ms', **ignored):
         access_mode = 4 if useNiMaxSettings else 0
         self._res = rm.open_resource(dev, access_mode=access_mode, write_termination='\n', read_termination='\n')
         self.reset_full()
@@ -41,7 +18,7 @@ class ArduinoPulseGen:
     def _map_ch(self, ch):
         if isinstance(ch, str):
             ch = self.portmap[ch]
-        return _intify(ch)
+        return intify(ch)
 
     @property
     def identity(self):
@@ -56,7 +33,7 @@ class ArduinoPulseGen:
         return self._res.query("syst:unit?")
     @time_unit.setter
     def time_unit(self, v):
-        unit_str = _to_enum(v, self.TimeUnit).name.lower()
+        unit_str = to_enum(v, self.TimeUnit).name.lower()
         self._res.write("syst:unit " + unit_str)
 
     def time_unit_store(self):
@@ -88,7 +65,7 @@ class ArduinoPulseGen:
             pulses = (pulses,)
         if len(pulses) == 0:
             return
-        pulses_str = ','.join([_floatify(v) for v in pulses])
+        pulses_str = ','.join([floatify(v) for v in pulses])
         if isinstance(chs, (str, int)):
             chs = (chs,)
         for ch in chs:

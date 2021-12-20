@@ -1,31 +1,6 @@
 import pyvisa
 from enum import Enum
-
-def _intify(v):
-    if isinstance(v, int):
-        return str(v)
-    if isinstance(v, float):
-        if v.is_integer():
-            return str(int(v))
-        else:
-            raise ValueError(f"{v} is not an exact integer")
-    raise TypeError(f"Variable of type {type(v)} is not an integer" )
-
-def _floatify(v, precision=6):
-    if isinstance(v, int):
-        return (str(v) + '.0')
-    if isinstance(v, float):
-        if v.is_integer():
-            return str(v)
-        return (f"{v:.{precision}f}".rstrip('0'))
-    raise TypeError(f"Variable of type {type(v)} is not a float" )
-
-def _to_enum(v, Type):
-    # if isinstance(v, int):
-    #     v = Type(v)
-    if isinstance(v, str):
-        return Type[v.upper().replace(' ','_')]
-    return Type(v)
+from ..utils import intify, floatify, to_enum
 
 class Srs:
 
@@ -91,21 +66,21 @@ class Srs:
         return self.Source(int(self._res.query("FMOD?"))).name
     @source.setter
     def source(self, v: Source):
-        self._res.write("FMOD " + str(_to_enum(v, self.Source).value))
+        self._res.write("FMOD " + str(to_enum(v, self.Source).value))
 
     @property
     def reserve(self):
         return self.Reserve(int(self._res.query("RMOD?"))).name
     @reserve.setter
     def reserve(self, v: Reserve):
-        self._res.write("RMOD " + str(_to_enum(v, self.Reserve).value))
+        self._res.write("RMOD " + str(to_enum(v, self.Reserve).value))
 
     @property
     def frequency(self):
         return float(self._res.query("FREQ?"))
     @frequency.setter
     def frequency(self, v):
-        self._res.write("FREQ " + _floatify(v))
+        self._res.write("FREQ " + floatify(v))
 
     @property
     def phase(self):
@@ -114,7 +89,7 @@ class Srs:
     def phase(self, v):
         if not -360. <= v < 730:
             raise ValueError(f"Phase value {v} is not in range [-360, 730)")
-        self._res.write("PHAS " + _floatify(v))
+        self._res.write("PHAS " + floatify(v))
 
     @property
     def harmonic(self):
@@ -123,7 +98,7 @@ class Srs:
     def harmonic(self, v):
         if not int(v) in range(1, 20000):
             raise ValueError(f"Harmonic value {v} is not in range [1, 19999]")
-        self._res.write("HARM " + _intify(v))
+        self._res.write("HARM " + intify(v))
 
     @property
     def sensitivity(self):
@@ -149,12 +124,12 @@ class Srs:
     def snap(self, params):
         if not len(params) in range (2, 6+1):
             raise ValueError(f"Min. 2, max. 6 values can be snapped at once (not {len(params)})")
-        params_str = [str(_to_enum(p, self.Input).value) for p in params]
+        params_str = [str(to_enum(p, self.Input).value) for p in params]
         res = self._res.query("SNAP? " + ','.join(params_str))
         return [float(v) for v in res.split(',')]
 
     def demod(self, param):
-        e = _to_enum(param, self.Input)
+        e = to_enum(param, self.Input)
         if e.value not in range(1, 4+1):
             raise ValueError(f"{e.name} is not a demodulated channel")
         return self._res.query("OUTP? " + str(e.value))
@@ -174,7 +149,7 @@ class Srs:
         if value is None:
             return self._res.query("AUXV? " + str(num))
         else:
-            self._res.write("AUXV " + str(num) + ',' + _floatify(value, 3))
+            self._res.write("AUXV " + str(num) + ',' + floatify(value, 3))
 
     @property
     def x(self):
