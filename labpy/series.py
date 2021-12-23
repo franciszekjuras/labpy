@@ -9,9 +9,13 @@ def _check_type(types, *vars):
 
 class Series:
 
-    def __init__(self, y: np.ndarray, x: np.ndarray | tuple | float, freq = None):
-        self._x: np.ndarray = Series.calc_x(y, x, freq)
-        self._y: np.ndarray = y
+    def __init__(self, y: np.ndarray, x: np.ndarray | tuple | float = None, freq = None):
+        if x is None and freq is None:
+            self._x = y.x
+            self._y = y.y
+        else:
+            self._x: np.ndarray = Series.calc_x(y, x, freq)
+            self._y: np.ndarray = y
 
     def copy(self):
         return Series(self._y.copy(), self._x.copy())
@@ -20,7 +24,14 @@ class Series:
         return Series(self._y.copy(), self._x)
 
     def decimate(self, samples: int = None, freq: float = None):
-        raise NotImplementedError()
+        if samples is not None and freq is not None:
+            raise ValueError("Either samples or freq should be specified, not both")
+        if freq is not None:
+            samples = max(1, int(self.freq // freq))
+        if samples is not None:
+            return Series(self._y[::samples], self._x[::samples])
+        else:
+            raise ValueError("Either samples or freq should be specified")
 
     @property
     def xy(self):
@@ -70,6 +81,28 @@ class Series:
         i1 = Series.find_idx(r, rng)
         return Series(self._y[i0:i1], self._x[i0:i1])
 
+    def cut(self, l=-inf, r=inf):
+        return self.slice(l, r, rel=True)
+
+    def extend(self, l=None, r=None, rel=False):
+        rng = self.range
+        s = rng[2]
+        l0, r0 = rng[0], rng[1] + self.dx
+        if l is not None:
+            if rel: l = l0 + l
+            li = min(Series.find_idx(l, rng, norm=False), 0)
+            lx = np.linspace(l0 + li * self.dx, l0, -li, endpoint=False)
+        else: lx = np.array([])
+        if r is not None:
+            if rel: r = r0 + r
+            ri = max(Series.find_idx(r, rng, norm=False), s)
+            rx = np.linspace(r0, self.dx * (ri - s), (ri - s), endpoint=False)
+        else: rx = np.array([])
+        return Series(
+            np.concatenate([np.zeros_like(lx), self._y, np.zeros_like(rx)]),
+            np.concatenate([lx, self._x, rx])
+        )
+
     def split(self, s, rel=False):        
         rng = self.range
         if rel:
@@ -100,12 +133,13 @@ class Series:
             return Series(getattr(self._y, op)(other), self._x)
 
     @staticmethod
-    def find_idx(v, range):
+    def find_idx(v, range, norm=True):
         l, r, s = range
-        if v <= l or isclose(v, l):
-            return 0
-        if v > r and not isclose(v, r):
-            return s
+        if norm:
+            if v <= l or isclose(v, l):
+                return 0
+            if v > r and not isclose(v, r):
+                return s
         i: float = (v - l)/(r - l) * (s - 1)
         if isclose(i, round(i)):
             return int(i)

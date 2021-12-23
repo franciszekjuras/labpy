@@ -4,12 +4,15 @@ from statsmodels.tsa.ar_model import AutoReg
 from statsmodels.tsa.ar_model import ar_select_order
 from scipy import signal
 
-def fft(ser):
+def fft(ser, pad = 1):
         real = np.isrealobj(ser._y)
         ft = np.fft.rfft if real else np.fft.fft
         ftfreq = np.fft.rfftfreq if real else np.fft.fftfreq
         d = abs(ser._x[1] - ser._x[0])
-        return Series(ft(ser._y), ftfreq(ser._x.size, d))
+        if pad < 1.:
+            raise ValueError(f"Padding should be >= 1, is {pad}")
+        n = int(ser._x.size * pad)
+        return Series(ft(ser._y, n=n), ftfreq(n, d))
 
 def filter(ser, ker):
         return Series(signal.convolve(ser._y, ker, mode='same'), ser._x)
