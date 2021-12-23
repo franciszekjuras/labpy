@@ -55,6 +55,12 @@ class NestedDict(dict):
     def copy(self):
         return NestedDict(self)
 
+    def get(self, idx, dflt=None):
+        try:
+            return self[idx]
+        except KeyError:
+            return dflt
+
     def __getitem__(self, idx):
         if isinstance(idx, list):
             idx = tuple(idx)
