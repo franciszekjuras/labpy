@@ -1,7 +1,5 @@
 from .series import Series
 import numpy as np
-from statsmodels.tsa.ar_model import AutoReg
-from statsmodels.tsa.ar_model import ar_select_order
 from scipy import signal
 
 def fft(ser, pad = 1):
@@ -18,6 +16,12 @@ def filter(ser, ker):
         return Series(signal.convolve(ser._y, ker, mode='same'), ser._x)
 
 def project(ser, t0, lag=None, forward=False, taps=None, trend='n'):
+    try:
+        from statsmodels.tsa.ar_model import AutoReg
+        from statsmodels.tsa.ar_model import ar_select_order
+    except ImportError as e:
+        print(e)
+        print("Install statsmodels manually or install labpython with [full] option e.g. pip install labpython[full]")
     ret = ser.copy_y()
     p1, p2 = ret.split(t0)
     if forward:

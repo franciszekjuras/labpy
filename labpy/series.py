@@ -11,11 +11,11 @@ class Series:
 
     def __init__(self, y: np.ndarray, x: np.ndarray | tuple | float = None, freq = None):
         if x is None and freq is None:
-            self._x = y.x
-            self._y = y.y
+            self._x = np.asarray(y.x)
+            self._y = np.asarray(y.y)
         else:
             self._x: np.ndarray = Series.calc_x(y, x, freq)
-            self._y: np.ndarray = y
+            self._y: np.ndarray = np.asarray(y)
 
     def copy(self):
         return Series(self._y.copy(), self._x.copy())

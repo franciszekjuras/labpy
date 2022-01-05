@@ -11,7 +11,7 @@ class KeithleyCS:
         raise NotImplementedError()
     @current.setter
     def current(self, v):
-        self._res.write("SOUR:CURR " + _floatify(v))
+        self._res.write("SOUR:CURR " + floatify(v))
 
     def set_sweep(self, currents:list, trig_line:int = 1, count:int=1):
         if len(currents) == 0:
@@ -22,13 +22,13 @@ class KeithleyCS:
             raise ValueError(f"count ({count}) should be a positive integer")
         self._res.write("SOUR:SWE:SPAC LIST")
         self._res.write("SOUR:SWE:RANG BEST")
-        self._res.write("SOUR:LIST:CURR " + ','.join([_floatify(c, 9) for c in currents]))
+        self._res.write("SOUR:LIST:CURR " + ','.join([floatify(c, 9) for c in currents]))
         self._res.write("SOUR:LIST:DEL " + ','.join(['1e-3'] * len(currents)))
         self._res.write("SOUR:LIST:COMP " + ','.join(['10'] * len(currents)))
-        self._res.write("SOUR:SWE:COUN " + _intify(count))
+        self._res.write("SOUR:SWE:COUN " + intify(count))
         self._res.write("SOUR:SWE:CAB OFF")
         self._res.write("TRIG:SOUR TLIN")
-        self._res.write("TRIG:ILIN " + _intify(trig_line))
+        self._res.write("TRIG:ILIN " + intify(trig_line))
         self._res.write("SOUR:SWE:ARM")
 
     def init(self):

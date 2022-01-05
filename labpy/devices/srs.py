@@ -173,7 +173,7 @@ class Srs:
 if __name__ == "__main__":
 
     visa = pyvisa.ResourceManager()
-    lockin = Srs(visa.open_resource('Lock-in', write_termination='\n', read_termination='\n'))
+    lockin = Srs(visa)
     print(lockin.identity)
     lockin.source = Srs.Source.INTERNAL
     lockin.reserve = Srs.Reserve.NORMAL

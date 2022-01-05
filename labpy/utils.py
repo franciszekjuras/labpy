@@ -54,3 +54,12 @@ def list_visa_devices(rm):
     res.insert(0, ("Alias", "Resource name"))
     for el in res:
         print(f"{el[0]:>15}  {el[1]}")
+
+def in_bounds(value, bounds, margin=1e-6, rel=0.):
+    l, r = bounds
+    if l >= r:
+        return False
+    off = max(margin, (r - l) * rel)
+    l += off
+    r -= off
+    return l < value < r
