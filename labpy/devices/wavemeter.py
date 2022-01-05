@@ -1,5 +1,5 @@
-from __future__ import annotations
 import pyvisa
+from typing import Union
 from ..utils import check_type
 
 class Wavemeter:
@@ -12,7 +12,7 @@ class Wavemeter:
     def identity(self):
         return self._res.query("*IDN?")
 
-    def _measure(self, channels: int | tuple, what: str):
+    def _measure(self, channels: Union[int, tuple], what: str):
         if isinstance(channels, int):
             channels = (channels,)
         check_type((int), *channels)
@@ -22,8 +22,8 @@ class Wavemeter:
             return vals[0]
         return vals
 
-    def frequency(self, channels: int | tuple):
+    def frequency(self, channels: Union[int, tuple]):
         return self._measure(channels, "freq")
 
-    def wavelength(self, channels: int | tuple):
+    def wavelength(self, channels: Union[int, tuple]):
         return self._measure(channels, "wav")

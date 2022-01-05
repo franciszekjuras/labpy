@@ -23,3 +23,11 @@ If you want to modify the package source code it's convenient to install it in d
 - navigate to its main directory (the one in which this `README.md` resides),
 - execute: `pip install -e .`
 - now you can use `import labpy` anywhere and any changes to the source code will be visible without reinstallation (if using jupyter kernel must be restarted)
+
+# Documentation
+
+Except some type hints code is undocumented. To get an overview of package structure and existing functions, you can use `pdoc`:
+```
+pip install pdoc
+pdoc labpy
+```

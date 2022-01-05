@@ -1,5 +1,5 @@
-from __future__ import annotations
 import numpy as np
+from typing import Union
 from math import floor, inf, isclose, ceil
 
 def _check_type(types, *vars):
@@ -9,7 +9,7 @@ def _check_type(types, *vars):
 
 class Series:
 
-    def __init__(self, y: np.ndarray, x: np.ndarray | tuple | float = None, freq = None):
+    def __init__(self, y: np.ndarray, x: Union[np.ndarray, tuple, float] = None, freq = None):
         if x is None and freq is None:
             self._x = np.asarray(y.x)
             self._y = np.asarray(y.y)
@@ -154,10 +154,12 @@ class Series:
         return [Series(y2d[i], x) for i in range(0, nrow)]
 
     @staticmethod
-    def calc_x(y: np.ndarray, x: np.ndarray | tuple | float, freq = None):
+    def calc_x(y: np.ndarray, x: Union[np.ndarray, tuple, float], freq = None):
         _check_type(np.ndarray, y)
         if not isinstance(x, np.ndarray):
             if freq:
+                if x is None:
+                    x = 0.
                 l, r = x, x + (y.size / freq)
             else:
                 l, r = x
