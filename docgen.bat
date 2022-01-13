@@ -1,1 +1,1 @@
-pdoc -o . -e labpy=https://github.com/franciszekjuras/labpy/blob/main/labpy/ labpy
+pdoc -o . -e labpy=https://github.com/franciszekjuras/labpy/blob/main/labpy/ -t . labpy

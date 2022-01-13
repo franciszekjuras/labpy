@@ -1,0 +1,6 @@
+{% extends "default/module.html.jinja2" %}
+{% block edit_button %}
+    {% if edit_url %}
+        <a class="pdoc-button git-button" href="{{ edit_url }}">View on GitHub</a>
+    {% endif %}
+{% endblock %}
