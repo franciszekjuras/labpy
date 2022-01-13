@@ -58,10 +58,13 @@
         </nav>
     <main class="pdoc">
             <section>
+                        <a class="pdoc-button git-button" href="https://github.com/franciszekjuras/labpy/blob/main/labpy/__init__.py">Edit on GitHub</a>
                     <h1 class="modulename">
 labpy    </h1>
 
-                        <div class="docstring"><h1 id="about">About</h1>
+                        <div class="docstring"><p><code>labpython == 0.2.2</code></p>
+
+<h1 id="about">About</h1>
 
 <p><strong>labpython</strong> (imported as <code><a href="">labpy</a></code>) is a collection of modules created to simplify gathering and processing experimental data. It also features a collection of modules inside <code><a href="labpy/devices.html">labpy.devices</a></code> namespace for high-level communication with various devices using <code>pyvisa</code> and <code>pydaqmx</code> backends. See <a href="https://franciszekjuras.github.io/labpy/labpy.html">documentation</a> for detailed information.</p>
 
@@ -105,14 +108,15 @@ pdoc labpy
                         <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
-<span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s1">&#39;../README.md&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-        <span class="vm">__doc__</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="k">except</span><span class="p">:</span>
-    <span class="k">pass</span>
 <span class="kn">import</span> <span class="nn">importlib.metadata</span>
 <span class="n">__version__</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">version</span><span class="p">(</span><span class="s1">&#39;labpython&#39;</span><span class="p">)</span>
+<span class="n">dirname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="vm">__doc__</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;`labpython == </span><span class="si">{</span><span class="n">__version__</span><span class="si">}</span><span class="s2">`</span><span class="se">\n</span><span class="s2">&quot;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s1">&#39;../README.md&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="vm">__doc__</span> <span class="o">+=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
 </pre></div>
 
         </details>
