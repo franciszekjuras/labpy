@@ -1,8 +1,0 @@
-/.*/
-/ve*/
-__pycache__/
-/*.patch
-/*test.py
-/*.egg-info/
-/dist/
-/build/
