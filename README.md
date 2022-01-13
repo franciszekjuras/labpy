@@ -1,6 +1,6 @@
 # About
 
-**labpython** (imported as `labpy`) is a collection of modules created to simplify gathering and processing experimental data. It also features a collection of modules inside `labpy.devices` namespace for high-level communication with various devices using `pyvisa` and `pydaqmx` backends.
+**labpython** (imported as `labpy`) is a collection of modules created to simplify gathering and processing experimental data. It also features a collection of modules inside `labpy.devices` namespace for high-level communication with various devices using `pyvisa` and `pydaqmx` backends. See [documentation](https://franciszekjuras.github.io/labpy/labpy.html) for detailed information.
 
 # Installation
 
@@ -26,7 +26,8 @@ If you want to modify the package source code it's convenient to install it in d
 
 # Documentation
 
-Except some type hints code is undocumented. To get an overview of package structure and existing functions, you can use `pdoc`:
+Relatively recent documentation can be browsed [here](https://franciszekjuras.github.io/labpy/labpy.html).
+If you want to generate documentation yourself, you can use `pdoc`:
 ```
 pip install pdoc
 pdoc labpy
