@@ -1,4 +1,7 @@
-import PyDAQmx as dmx
+try:
+    import PyDAQmx as dmx
+except Exception as e:
+    print(e)
 import numpy as np
 from typing import Union
 
