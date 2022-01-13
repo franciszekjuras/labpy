@@ -1,10 +1,10 @@
-from __future__ import annotations
 import PyDAQmx as dmx
 import numpy as np
+from typing import Union
 
 class DAQmx:
 
-    def __init__(self, dev: str = "Dev1", channels: str | tuple = (),  freq=1000., time=0.01, trig: str = None, t0 = 0., **ignored):
+    def __init__(self, dev: str = "Dev1", channels: Union[str, tuple] = (),  freq=1000., time=0.01, trig: str = None, t0 = 0., **ignored):
         self._running = False
         self._dev = dev
         self._time = time - t0
