@@ -1,4 +1,10 @@
 class DataList(list):
+    def __init__(self, init=[]):
+        super().__init__(init)
+        if hasattr(init, '__dict__'):
+            for k, v in init.__dict__.items():
+                self.__dict__[k] =v
+
     def __getitem__(self, idx):
         if isinstance(idx, str):
             return [el[idx] for el in super().__iter__()]
@@ -8,7 +14,12 @@ class DataList(list):
         else:
             return super().__getitem__(idx)
     def __repr__(self) -> str:
-        return 'Info:\n' + self.__dict__.__repr__() + '\nData:\n' + super().__repr__()
+        resp = 'Info:\n' + self.__dict__.__repr__()
+        if len(self) < 3:
+            resp += '\nData: []\n' +  super().__repr__()
+        else:
+            resp += '\nData:\n' + self[0].__repr__() + f'\n... {len(self) - 2} ...\n' + self[-1].__repr__()
+        return resp
     def info(self):
         return self.__dict__
     def data(self):

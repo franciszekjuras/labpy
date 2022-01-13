@@ -15,7 +15,7 @@ def fft(ser, pad = 1):
 def filter(ser, ker):
         return Series(signal.convolve(ser._y, ker, mode='same'), ser._x)
 
-def project(ser, t0, lag=None, forward=False, taps=None, trend='n'):
+def project(ser, t0, lag=None, forward=False, taps=None, trend='c', info={}):
     try:
         from statsmodels.tsa.ar_model import AutoReg
         from statsmodels.tsa.ar_model import ar_select_order
@@ -31,13 +31,13 @@ def project(ser, t0, lag=None, forward=False, taps=None, trend='n'):
         train = p2.y[::-1]
         to_pred = p1.y[::-1]
     if lag is None and taps is None:
-        lag = ar_select_order(train, maxlag=50, trend=trend, ic='hqic').ar_lags
-        print(lag)
+        lag = ar_select_order(train, maxlag=50, trend=trend).ar_lags
     elif taps is not None:
         lag = taps
     else:
         lag = int(lag * ser.freq)
+    info['lag'] = lag
     fit = AutoReg(train, lags=lag, trend=trend).fit()
-    print(fit.params)
+    info['params'] = fit.params
     to_pred[:] = fit.model.predict(fit.params, start=train.size, end=train.size + to_pred.size -1)
     return ret

@@ -27,7 +27,6 @@ class DmtCS:
             self.high_range[ch] = high_range
         rng = '40mA' if self.high_range[ch] else '4mA'
         message = ';'.join(['!set', str(ch), rng , floatify(v, 3)])
-        print(message)
         self._res.write(message)
 
     def get_current(self, ch):
