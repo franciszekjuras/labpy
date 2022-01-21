@@ -81,7 +81,6 @@ class Srs:
         return float(self._res.query("FREQ?"))
     @frequency.setter
     def frequency(self, v):
-        """Some property setter"""
         self._res.write("FREQ " + floatify(v))
 
     @property
