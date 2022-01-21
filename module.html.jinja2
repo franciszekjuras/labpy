@@ -5,11 +5,6 @@ This line won't be included in any rendered output, text in Jinja2 child templat
 <style>
 
     {% block style_theme %}
-        {#
-        We can optionally enable dark mode depending on the user's preferences:
-        {{ super() }}
-        @media (prefers-color-scheme: dark) {
-        #}
         :root {
             --pdoc-background: #212529;
         }
@@ -30,9 +25,15 @@ This line won't be included in any rendered output, text in Jinja2 child templat
             --def: #0cdd0c;
             --annotation: #00c037;
         }
-        {# } #}
     {% endblock %}
 
+    {% block style_content %}
+        {{ super() }}
+        .pdoc h6 {
+            font-weight: bold;
+            margin: .3em .0em;
+        }
+    {% endblock %}
 </style>
 
 {% block edit_button %}

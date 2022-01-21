@@ -1,1 +1,1 @@
-pdoc -o . --math --logo https://franciszekjuras.github.io/labpy/img/logo.png -e labpy=https://github.com/franciszekjuras/labpy/blob/main/labpy/ -t . labpy
+pdoc -o . --math -d numpy --logo https://franciszekjuras.github.io/labpy/img/logo.png -e labpy=https://github.com/franciszekjuras/labpy/blob/main/labpy/ -t . labpy
