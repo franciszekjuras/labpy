@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Union
-from math import floor, inf, isclose, ceil
+from math import inf, isclose, ceil
 
 def _check_type(types, *vars):
     for v in vars:
@@ -9,13 +9,28 @@ def _check_type(types, *vars):
 
 class Series:
 
-    def __init__(self, y: np.ndarray, x: Union[np.ndarray, tuple, float] = None, freq = None):
+    def __init__(self, y: np.ndarray, x: Union[np.ndarray, float] = None, freq: float = None, x0: float = 0.):
+        '''Initialize Series instance. Numpy arrays passed are shallow-copied.
+
+        Parameters
+        ----------
+        y: np.ndarray | Series-like
+            Array with values or Series-like (with x and y attributes) object.
+        x: np.ndarray | float
+            Array of monospaced ordering values (e.g. time or frequency)
+            or single value equal to length of measurement (e.g. total time). Exclusive with `freq` parameter.
+        freq: float
+            Frequency of samples. Exclusive with `x` parameter.
+        x0: float
+            Value added to x array when it's not passed explicitily,
+            i.e. is defined by `freq` or single-value `x` parameter. Ignored otherwise.
+        '''
         if x is None and freq is None:
-            self._x = np.asarray(y.x)
-            self._y = np.asarray(y.y)
-        else:
-            self._x: np.ndarray = Series.calc_x(y, x, freq)
-            self._y: np.ndarray = np.asarray(y)
+            # Assume x is Series-like and try to copy attributes
+            x = np.asarray(y.x)
+            y = np.asarray(y.y)
+        self._x: np.ndarray = Series.calc_x(y, x, freq, x0)
+        self._y: np.ndarray = np.asarray(y)
 
     def copy(self):
         return Series(self._y.copy(), self._x.copy())
@@ -146,28 +161,32 @@ class Series:
         return ceil(i)
 
     @staticmethod
-    def from2darray(y2d: np.ndarray, *args):
+    def from2darray(y2d: np.ndarray, *args, **kwargs):
         if(y2d.ndim != 2):
             raise ValueError("y2d array should be two-dimensional")
         nrow = y2d.shape[0]
-        x = Series.calc_x(y2d[0], *args)
+        x = Series.calc_x(y2d[0], *args, **kwargs)
         return [Series(y2d[i], x) for i in range(0, nrow)]
 
     @staticmethod
-    def calc_x(y: np.ndarray, x: Union[np.ndarray, tuple, float], freq = None):
+    def calc_x(y: np.ndarray, x: Union[np.ndarray, float] = None, freq=None, x0 = 0.):
         _check_type(np.ndarray, y)
+        if y.ndim != 1:
+            raise ValueError(f"Array y (dim={y.ndim}), should be one-dimensional")
+        if x is not None and freq is not None:
+            raise ValueError("Either x or freq should be specified, not both")
+        if x is None and freq is None:
+            raise ValueError("Either x or freq should be specified")
+        if freq is not None:
+            x = y.size / freq
         if not isinstance(x, np.ndarray):
-            if freq:
-                if x is None:
-                    x = 0.
-                l, r = x, x + (y.size / freq)
-            else:
-                l, r = x
+            l, r = x0, x0 + x
             x = np.linspace(l, r, y.size, endpoint=False)
-        if x.ndim != 1 or y.ndim != 1:
-            raise ValueError(f"Arrays x (dim={x.ndim}), y (dim={y.ndim}) should be one-dimensional")
-        if(x.size != y.size):
-            raise ValueError(f"Arrays x (size={x.size}), y (size={y.size}) should be of equal size")
+        else:
+            if x.ndim != 1:
+                raise ValueError(f"Array x (dim={x.ndim}), should be one-dimensional")
+            if(x.size != y.size):
+                raise ValueError(f"Array x size = {x.size} should be equal to array y size = {y.size}")
         return x
 
 def _gen_op(op):
