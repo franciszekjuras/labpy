@@ -9,8 +9,15 @@ def _check_type(types, *vars):
 
 class Series:
     '''Series object represents ordered one-dimensional data.\n
-    `y` property stores data (of any type accepted by nd.array), while `x` property stores equidistant, ascending
-    ordering values (e.g. time or frequency)
+    `y` property stores data (of any type accepted by `np.ndarray`), while `x` property stores equidistant, ascending
+    ordering values (e.g. time or frequency).
+    It supports `+`, `-`, `*`, `/`, `+=`, `-=`, `*=`, `/=` operators with some restrictions:
+    - Series object must be left-hand side (lhs)
+    - On right-hand side (rhs) either another `Series` object can be used
+    or any type that is supported by underlying numpy array (eg. another numpy array or a single number)
+    - If operation is performed on two Series objects, their x arrays must match,
+    if numpy array is on rhs, its size must match with Series' y array size
+
 
     See also
     --------
@@ -24,9 +31,9 @@ class Series:
         Parameters
         ----------
         y: np.ndarray | Series-like
-            Array with values or Series-like (with x and y attributes) object.
+            Array with values or Series-like (with `x` and `y` attributes) object.
         x: np.ndarray | float
-            Array of monospaced ordering values (e.g. time or frequency)
+            Array of equidistant ordering values (e.g. time or frequency)
             or single value equal to length of measurement (e.g. total time). Exclusive with `freq` parameter.
         freq: float
             Frequency of samples. Exclusive with `x` parameter.
