@@ -130,12 +130,12 @@ class Series:
         if l is not None:
             if rel: l = l0 + l
             li = min(Series.find_idx(l, rng, norm=False), 0)
-            lx = np.linspace(l0 + li * self.dx, l0, -li, endpoint=False)
+            lx = np.linspace(l0 + li * (r0 - l0) / s, l0, -li, endpoint=False)
         else: lx = np.array([])
         if r is not None:
             if rel: r = r0 + r
             ri = max(Series.find_idx(r, rng, norm=False), s)
-            rx = np.linspace(r0, self.dx * (ri - s), (ri - s), endpoint=False)
+            rx = np.linspace(r0, r0 + (ri - s) * (r0 - l0) / s, (ri - s), endpoint=False)
         else: rx = np.array([])
         return Series(
             np.concatenate([np.zeros_like(lx), self._y, np.zeros_like(rx)]),
