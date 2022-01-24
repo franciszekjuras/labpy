@@ -101,4 +101,24 @@ class NestedDict(dict):
         else:
             return super().__repr__() + '\nshadow: ' + self.shadow.__repr__()
 
-from .series import Series, Average
+class Average:
+
+    def __init__(self, v = None):
+        if v is not None:
+            self.sum = v * 1.
+        self.count = 0 if v is None else 1
+
+    def add(self, v):
+        if self.count == 0:
+            self.sum = v * 1.
+        else:
+            self.sum += v
+        self.count += 1
+
+    @property
+    def value(self):
+        if self.count == 0:
+            return 0.
+        return self.sum / self.count
+
+from .series import Series

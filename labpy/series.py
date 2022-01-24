@@ -215,23 +215,3 @@ def _gen_np_apply(fun):
     return lambda self: Series(getattr(np, fun)(self._y), self._x)
 for fun in ["abs", "real", "imag", "angle"]:
     setattr(Series, fun, _gen_np_apply(fun))
-
-class Average:
-
-    def __init__(self, v = None):
-        if v is not None:
-            self.sum = v * 1.
-        self.count = 0 if v is None else 1
-
-    def add(self, v):
-        if self.count == 0:
-            self.sum = v * 1.
-        else:
-            self.sum += v
-        self.count += 1
-
-    @property
-    def value(self):
-        if self.count == 0:
-            return 0.
-        return self.sum / self.count
