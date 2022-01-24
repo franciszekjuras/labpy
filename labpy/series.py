@@ -8,6 +8,15 @@ def _check_type(types, *vars):
             raise TypeError(f"{type(v)} is not of type(s) {types}")
 
 class Series:
+    '''Series object represents ordered one-dimensional data.\n
+    `y` property stores data (of any type accepted by nd.array), while `x` property stores equidistant, ascending
+    ordering values (e.g. time or frequency)
+
+    See also
+    --------
+    `labpy.dsp`:
+        collection of functions for processing data stored in Series object
+    '''
 
     def __init__(self, y: np.ndarray, x: Union[np.ndarray, float] = None, freq: float = None, x0: float = 0.):
         '''Initialize Series instance. Numpy arrays passed are shallow-copied.
@@ -22,8 +31,8 @@ class Series:
         freq: float
             Frequency of samples. Exclusive with `x` parameter.
         x0: float
-            Value added to x array when it's not passed explicitily,
-            i.e. is defined by `freq` or single-value `x` parameter. Ignored otherwise.
+            Value added to x array when it's not passed explicitly,
+            i.e. is defined by `freq` or single-valued `x` parameter. Ignored otherwise.
         '''
         if x is None and freq is None:
             # Assume x is Series-like and try to copy attributes
