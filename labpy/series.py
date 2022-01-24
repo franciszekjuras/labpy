@@ -15,14 +15,22 @@ class Series:
     - Series object must be left-hand side (lhs)
     - On right-hand side (rhs) either another `Series` object can be used
     or any type that is supported by underlying numpy array (eg. another numpy array or a single number)
-    - If operation is performed on two Series objects, their x arrays must match,
-    if numpy array is on rhs, its size must match with Series' y array size
+    - If operation is performed on two `Series` objects, their x arrays must match,
+    if numpy array is on rhs, its size must match with lhs `Series` object y array size
 
+    Notes
+    -----
+    When new `Series` object is constructed, either explicitly with `Series()`
+    or implicitly, e.g. when performing arithmetical operations or using functions
+    like `slice`, `split`, only array references are copied if possible.
+    Thus, if you modify x or y array in-place, changes may affect other objects.
+    If you want to modify underlying arrays in-place, it's advised to make an explicit copy,
+    either of both arrays with `copy` method or only of y array with `copy_y`
 
     See also
     --------
     `labpy.dsp`:
-        collection of functions for processing data stored in Series object
+        collection of functions for processing data stored in `Series` object
     '''
 
     def __init__(self, y: np.ndarray, x: Union[np.ndarray, float] = None, freq: float = None, x0: float = 0.):
