@@ -123,21 +123,6 @@
                 </ul>
 
             </li>
-            <li>
-                    <a class="class" href="#Average">Average</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#Average.__init__">Average</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Average.add">add</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#Average.value">value</a>
-                        </li>
-                </ul>
-
-            </li>
     </ul>
 
 
@@ -151,7 +136,7 @@
         </nav>
     <main class="pdoc">
             <section>
-        <a class="pdoc-button git-button" href="https://github.com/franciszekjuras/labpy/blob/main/labpy/series.py">View on GitHub</a>
+        <a class="pdoc-button git-button" href="https://github.com/franciszekjuras/labpy/blob/main/labpy/series.py">Source</a>
                     <h1 class="modulename">
 <a href="./../labpy.html">labpy</a><wbr>.series    </h1>
 
@@ -168,6 +153,30 @@
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="si">}</span><span class="s2"> is not of type(s) </span><span class="si">{</span><span class="n">types</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Series</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Series object represents ordered one-dimensional data.\n</span>
+<span class="sd">    `y` property stores data (of any type accepted by `np.ndarray`), while `x` property stores equidistant, ascending</span>
+<span class="sd">    ordering values (e.g. time or frequency).</span>
+<span class="sd">    It supports `+`, `-`, `*`, `/`, `+=`, `-=`, `*=`, `/=` operators with some restrictions:</span>
+<span class="sd">    - Series object must be left-hand side (lhs)</span>
+<span class="sd">    - On right-hand side (rhs) either another `Series` object can be used</span>
+<span class="sd">    or any type that is supported by underlying numpy array (eg. another numpy array or a single number)</span>
+<span class="sd">    - If operation is performed on two `Series` objects, their x arrays must match,</span>
+<span class="sd">    if numpy array is on rhs, its size must match with lhs `Series` object y array size</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    When new `Series` object is constructed, either explicitly with `Series()`</span>
+<span class="sd">    or implicitly, e.g. when performing arithmetical operations or using functions</span>
+<span class="sd">    like `slice`, `split`, only array references are copied if possible.</span>
+<span class="sd">    Thus, if you modify x or y array in-place, changes may affect other objects.</span>
+<span class="sd">    If you want to modify underlying arrays in-place, it&#39;s advised to make an explicit copy,</span>
+<span class="sd">    either of both arrays with `copy` method or only of y array with `copy_y`</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    `labpy.dsp`:</span>
+<span class="sd">        collection of functions for processing data stored in `Series` object</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">freq</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">x0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Initialize Series instance. Numpy arrays passed are shallow-copied.</span>
@@ -175,15 +184,15 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        y: np.ndarray | Series-like</span>
-<span class="sd">            Array with values or Series-like (with x and y attributes) object.</span>
+<span class="sd">            Array with values or Series-like (with `x` and `y` attributes) object.</span>
 <span class="sd">        x: np.ndarray | float</span>
-<span class="sd">            Array of monospaced ordering values (e.g. time or frequency)</span>
+<span class="sd">            Array of equidistant ordering values (e.g. time or frequency)</span>
 <span class="sd">            or single value equal to length of measurement (e.g. total time). Exclusive with `freq` parameter.</span>
 <span class="sd">        freq: float</span>
 <span class="sd">            Frequency of samples. Exclusive with `x` parameter.</span>
 <span class="sd">        x0: float</span>
-<span class="sd">            Value added to x array when it&#39;s not passed explicitily,</span>
-<span class="sd">            i.e. is defined by `freq` or single-value `x` parameter. Ignored otherwise.</span>
+<span class="sd">            Value added to x array when it&#39;s not passed explicitly,</span>
+<span class="sd">            i.e. is defined by `freq` or single-valued `x` parameter. Ignored otherwise.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">freq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Assume x is Series-like and try to copy attributes</span>
@@ -359,26 +368,6 @@
     <span class="k">return</span> <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">Series</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">np</span><span class="p">,</span> <span class="n">fun</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">_y</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">fun</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;abs&quot;</span><span class="p">,</span> <span class="s2">&quot;real&quot;</span><span class="p">,</span> <span class="s2">&quot;imag&quot;</span><span class="p">,</span> <span class="s2">&quot;angle&quot;</span><span class="p">]:</span>
     <span class="nb">setattr</span><span class="p">(</span><span class="n">Series</span><span class="p">,</span> <span class="n">fun</span><span class="p">,</span> <span class="n">_gen_np_apply</span><span class="p">(</span><span class="n">fun</span><span class="p">))</span>
-
-<span class="k">class</span> <span class="nc">Average</span><span class="p">:</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
-
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">+=</span> <span class="n">v</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mf">0.</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span>
 </pre></div>
 
         </details>
@@ -396,6 +385,30 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Series</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Series object represents ordered one-dimensional data.\n</span>
+<span class="sd">    `y` property stores data (of any type accepted by `np.ndarray`), while `x` property stores equidistant, ascending</span>
+<span class="sd">    ordering values (e.g. time or frequency).</span>
+<span class="sd">    It supports `+`, `-`, `*`, `/`, `+=`, `-=`, `*=`, `/=` operators with some restrictions:</span>
+<span class="sd">    - Series object must be left-hand side (lhs)</span>
+<span class="sd">    - On right-hand side (rhs) either another `Series` object can be used</span>
+<span class="sd">    or any type that is supported by underlying numpy array (eg. another numpy array or a single number)</span>
+<span class="sd">    - If operation is performed on two `Series` objects, their x arrays must match,</span>
+<span class="sd">    if numpy array is on rhs, its size must match with lhs `Series` object y array size</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    When new `Series` object is constructed, either explicitly with `Series()`</span>
+<span class="sd">    or implicitly, e.g. when performing arithmetical operations or using functions</span>
+<span class="sd">    like `slice`, `split`, only array references are copied if possible.</span>
+<span class="sd">    Thus, if you modify x or y array in-place, changes may affect other objects.</span>
+<span class="sd">    If you want to modify underlying arrays in-place, it&#39;s advised to make an explicit copy,</span>
+<span class="sd">    either of both arrays with `copy` method or only of y array with `copy_y`</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    `labpy.dsp`:</span>
+<span class="sd">        collection of functions for processing data stored in `Series` object</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">freq</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">x0</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Initialize Series instance. Numpy arrays passed are shallow-copied.</span>
@@ -403,15 +416,15 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        y: np.ndarray | Series-like</span>
-<span class="sd">            Array with values or Series-like (with x and y attributes) object.</span>
+<span class="sd">            Array with values or Series-like (with `x` and `y` attributes) object.</span>
 <span class="sd">        x: np.ndarray | float</span>
-<span class="sd">            Array of monospaced ordering values (e.g. time or frequency)</span>
+<span class="sd">            Array of equidistant ordering values (e.g. time or frequency)</span>
 <span class="sd">            or single value equal to length of measurement (e.g. total time). Exclusive with `freq` parameter.</span>
 <span class="sd">        freq: float</span>
 <span class="sd">            Frequency of samples. Exclusive with `x` parameter.</span>
 <span class="sd">        x0: float</span>
-<span class="sd">            Value added to x array when it&#39;s not passed explicitily,</span>
-<span class="sd">            i.e. is defined by `freq` or single-value `x` parameter. Ignored otherwise.</span>
+<span class="sd">            Value added to x array when it&#39;s not passed explicitly,</span>
+<span class="sd">            i.e. is defined by `freq` or single-valued `x` parameter. Ignored otherwise.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">freq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Assume x is Series-like and try to copy attributes</span>
@@ -580,7 +593,35 @@
 
         </details>
 
-    
+            <div class="docstring"><p>Series object represents ordered one-dimensional data.</p>
+
+<p><code><a href="#Series.y">y</a></code> property stores data (of any type accepted by <code>np.ndarray</code>), while <code><a href="#Series.x">x</a></code> property stores equidistant, ascending
+ordering values (e.g. time or frequency).
+It supports <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code> operators with some restrictions:</p>
+
+<ul>
+<li>Series object must be left-hand side (lhs)</li>
+<li>On right-hand side (rhs) either another <code><a href="#Series">Series</a></code> object can be used
+or any type that is supported by underlying numpy array (eg. another numpy array or a single number)</li>
+<li>If operation is performed on two <code><a href="#Series">Series</a></code> objects, their x arrays must match,
+if numpy array is on rhs, its size must match with lhs <code><a href="#Series">Series</a></code> object y array size</li>
+</ul>
+
+<h6 id="notes">Notes</h6>
+
+<p>When new <code><a href="#Series">Series</a></code> object is constructed, either explicitly with <code><a href="#Series">Series()</a></code>
+or implicitly, e.g. when performing arithmetical operations or using functions
+like <code><a href="#Series.slice">slice</a></code>, <code><a href="#Series.split">split</a></code>, only array references are copied if possible.
+Thus, if you modify x or y array in-place, changes may affect other objects.
+If you want to modify underlying arrays in-place, it's advised to make an explicit copy,
+either of both arrays with <code><a href="#Series.copy">copy</a></code> method or only of y array with <code><a href="#Series.copy_y">copy_y</a></code></p>
+
+<h6 id="see-also">See also</h6>
+
+<p><code><a href="dsp.html">labpy.dsp</a></code>:
+    collection of functions for processing data stored in <code><a href="#Series">Series</a></code> object</p>
+</div>
+
 
                             <div id="Series.__init__" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Series.__init__">#&nbsp;&nbsp</a>
@@ -602,15 +643,15 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        y: np.ndarray | Series-like</span>
-<span class="sd">            Array with values or Series-like (with x and y attributes) object.</span>
+<span class="sd">            Array with values or Series-like (with `x` and `y` attributes) object.</span>
 <span class="sd">        x: np.ndarray | float</span>
-<span class="sd">            Array of monospaced ordering values (e.g. time or frequency)</span>
+<span class="sd">            Array of equidistant ordering values (e.g. time or frequency)</span>
 <span class="sd">            or single value equal to length of measurement (e.g. total time). Exclusive with `freq` parameter.</span>
 <span class="sd">        freq: float</span>
 <span class="sd">            Frequency of samples. Exclusive with `x` parameter.</span>
 <span class="sd">        x0: float</span>
-<span class="sd">            Value added to x array when it&#39;s not passed explicitily,</span>
-<span class="sd">            i.e. is defined by `freq` or single-value `x` parameter. Ignored otherwise.</span>
+<span class="sd">            Value added to x array when it&#39;s not passed explicitly,</span>
+<span class="sd">            i.e. is defined by `freq` or single-valued `x` parameter. Ignored otherwise.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">freq</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># Assume x is Series-like and try to copy attributes</span>
@@ -628,15 +669,15 @@
 
 <ul>
 <li><strong>y</strong> (np.ndarray | Series-like):
-Array with values or Series-like (with x and y attributes) object.</li>
+Array with values or Series-like (with <code><a href="#Series.x">x</a></code> and <code><a href="#Series.y">y</a></code> attributes) object.</li>
 <li><strong>x</strong> (np.ndarray | float):
-Array of monospaced ordering values (e.g. time or frequency)
+Array of equidistant ordering values (e.g. time or frequency)
 or single value equal to length of measurement (e.g. total time). Exclusive with <code><a href="#Series.freq">freq</a></code> parameter.</li>
 <li><strong>freq</strong> (float):
 Frequency of samples. Exclusive with <code><a href="#Series.x">x</a></code> parameter.</li>
 <li><strong>x0</strong> (float):
-Value added to x array when it's not passed explicitily,
-i.e. is defined by <code><a href="#Series.freq">freq</a></code> or single-value <code><a href="#Series.x">x</a></code> parameter. Ignored otherwise.</li>
+Value added to x array when it's not passed explicitly,
+i.e. is defined by <code><a href="#Series.freq">freq</a></code> or single-valued <code><a href="#Series.x">x</a></code> parameter. Ignored otherwise.</li>
 </ul>
 </div>
 
@@ -1071,95 +1112,6 @@ i.e. is defined by <code><a href="#Series.freq">freq</a></code> or single-value 
 </pre></div>
 
         </details>
-
-    
-
-                            </div>
-                </section>
-                <section id="Average">
-                                <div class="attr class">
-        <a class="headerlink" href="#Average">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">Average</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Average</span><span class="p">:</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
-
-    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">+=</span> <span class="n">v</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="mf">0.</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            <div id="Average.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Average.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">Average</span><span class="signature">(v=None)</span>
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="Average.add" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Average.add">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">add</span><span class="signature">(self, v)</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">+=</span> <span class="n">v</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-</pre></div>
-
-        </details>
-
-    
-
-                            </div>
-                            <div id="Average.value" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#Average.value">#&nbsp;&nbsp</a>
-
-        <span class="name">value</span>
-    </div>
 
     
 

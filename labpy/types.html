@@ -90,6 +90,21 @@
                 </ul>
 
             </li>
+            <li>
+                    <a class="class" href="#Average">Average</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#Average.__init__">Average</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Average.add">add</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#Average.value">value</a>
+                        </li>
+                </ul>
+
+            </li>
     </ul>
 
 
@@ -103,7 +118,7 @@
         </nav>
     <main class="pdoc">
             <section>
-        <a class="pdoc-button git-button" href="https://github.com/franciszekjuras/labpy/blob/main/labpy/types.py">View on GitHub</a>
+        <a class="pdoc-button git-button" href="https://github.com/franciszekjuras/labpy/blob/main/labpy/types.py">Source</a>
                     <h1 class="modulename">
 <a href="./../labpy.html">labpy</a><wbr>.types    </h1>
 
@@ -213,7 +228,27 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">shadow: &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">shadow</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
-<span class="kn">from</span> <span class="nn">.series</span> <span class="kn">import</span> <span class="n">Series</span><span class="p">,</span> <span class="n">Average</span>
+<span class="k">class</span> <span class="nc">Average</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">+=</span> <span class="n">v</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span>
+
+<span class="kn">from</span> <span class="nn">.series</span> <span class="kn">import</span> <span class="n">Series</span>
 </pre></div>
 
         </details>
@@ -589,6 +624,95 @@ In either case, this is followed by: for k in F:  D[k] = F[k]</p>
 
             </div>
                                 </dl>
+                            </div>
+                </section>
+                <section id="Average">
+                                <div class="attr class">
+        <a class="headerlink" href="#Average">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">Average</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">Average</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">+=</span> <span class="n">v</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mf">0.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            <div id="Average.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Average.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">Average</span><span class="signature">(v=None)</span>
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">1</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Average.add" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Average.add">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">add</span><span class="signature">(self, v)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="mf">1.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sum</span> <span class="o">+=</span> <span class="n">v</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Average.value" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#Average.value">#&nbsp;&nbsp</a>
+
+        <span class="name">value</span>
+    </div>
+
+    
+
                             </div>
                 </section>
     </main>
