@@ -14,14 +14,16 @@ class DataList(list):
         else:
             return super().__getitem__(idx)
     def __repr__(self) -> str:
-        resp = 'Info:\n' + self.__dict__.__repr__()
+        resp = 'Meta:\n' + self.meta.__repr__()
         if len(self) < 3:
-            resp += '\nData: []\n' +  super().__repr__()
+            resp += '\nData:\n' +  super().__repr__()
         else:
             resp += '\nData:\n' + self[0].__repr__() + f'\n... {len(self) - 2} ...\n' + self[-1].__repr__()
         return resp
-    def info(self):
+    @property
+    def meta(self):
         return self.__dict__
+    @property
     def data(self):
         return [el for el in super().__iter__()]
 
