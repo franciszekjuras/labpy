@@ -112,6 +112,13 @@ class Series:
         return Series(fun(self._x), self._x)
 
     def slice(self, l=-inf, r=inf, rel=False):
+        '''Return new `Series` object constructed by taking view of `x` array
+        for values $l \\leq x < r$ and corrresponding view of `y` array.
+        If `rel = False` (default), $l$ and $r$ are absolute.
+        If `rel = True`, $l$ is relative to `x` array beginning if $l \\geq 0$ and end if $l < 0$,
+        same for $r$ except it points to `x` array end if $r = 0$\n
+        Use `cut` for default relative specification.
+        '''
         rng = self.range
         if rel:
             l = rng[0] + l if l >= 0. else rng[1] + l + self.dx
@@ -121,6 +128,7 @@ class Series:
         return Series(self._y[i0:i1], self._x[i0:i1])
 
     def cut(self, l=-inf, r=inf):
+        '''Same as `slice` with `rel = True`'''
         return self.slice(l, r, rel=True)
 
     def extend(self, l=None, r=None, rel=False):
