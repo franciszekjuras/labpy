@@ -55,7 +55,11 @@ def list_visa_devices(rm):
     for el in res:
         print(f"{el[0]:>15}  {el[1]}")
 
-def in_bounds(value, bounds, margin=1e-6, rel=0.):
+def in_bounds(value, bounds, margin=0., rel=0.) -> bool:
+    '''Check if `value` is between `bounds` (pair of numbers).
+    If `bounds = [l, r]` then values closer than
+    `max(margin, (r - l) * rel)` to bounds are considered out of bounds.
+    '''
     l, r = bounds
     if l >= r:
         return False
