@@ -149,7 +149,11 @@
     <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">el</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">el</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">in_bounds</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">rel</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">in_bounds</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">rel</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Check if `value` is between `bounds` (pair of numbers).</span>
+<span class="sd">    If `bounds = [l, r]` then values closer than</span>
+<span class="sd">    `max(margin, (r - l) * rel)` to bounds are considered out of bounds.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">bounds</span>
     <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;=</span> <span class="n">r</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -323,12 +327,16 @@
 
         
             <span class="def">def</span>
-            <span class="name">in_bounds</span><span class="signature">(value, bounds, margin=1e-06, rel=0.0)</span>:
+            <span class="name">in_bounds</span><span class="signature">(value, bounds, margin=0.0, rel=0.0) -&gt; bool</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">in_bounds</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">rel</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">in_bounds</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">rel</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Check if `value` is between `bounds` (pair of numbers).</span>
+<span class="sd">    If `bounds = [l, r]` then values closer than</span>
+<span class="sd">    `max(margin, (r - l) * rel)` to bounds are considered out of bounds.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">bounds</span>
     <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;=</span> <span class="n">r</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
@@ -340,7 +348,11 @@
 
         </details>
 
-    
+            <div class="docstring"><p>Check if <code>value</code> is between <code>bounds</code> (pair of numbers).
+If <code>bounds = [l, r]</code> then values closer than
+<code>max(margin, (r - l) * rel)</code> to bounds are considered out of bounds.</p>
+</div>
+
 
                 </section>
     </main>
