@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="5mm"
+   height="5mm"
+   viewBox="0 0 5 5.0000001"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
+   sodipodi:docname="labpy_icon.svg"
+   inkscape:export-filename="C:\Users\Franciszek\LocalFiles\Python\labpy_doc\img\favicon.png"
+   inkscape:export-xdpi="325.12"
+   inkscape:export-ydpi="325.12"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     fit-margin-top="0.5"
+     fit-margin-left="0.5"
+     fit-margin-right="0.5"
+     fit-margin-bottom="0.5"
+     inkscape:zoom="17.335624"
+     inkscape:cx="7.3259551"
+     inkscape:cy="19.583951"
+     inkscape:window-width="1601"
+     inkscape:window-height="1041"
+     inkscape:window-x="36"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1"
+     inkscape:snap-global="false"
+     width="5mm" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-18.061429,-107.51829)">
+    <path
+       d="m 20.462369,111.19073 c -0.211255,0.30762 -0.422403,0.60712 -0.614181,0.87595 1.030268,-0.0181 1.836292,0.0798 2.7456,0.23151 0.460367,0.0768 -1.492235,-1.77474 -1.802631,-1.67004 -0.115929,0.25229 -0.1744,0.32743 -0.328788,0.56258 z"
+       style="font-size:8.46667px;line-height:1.25;font-family:Bahnschrift;-inkscape-font-specification:'Bahnschrift, Normal';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#02a1ff;fill-opacity:1;stroke-width:0.264583"
+       id="path1715"
+       sodipodi:nodetypes="ccscc"
+       inkscape:export-filename="C:\Users\Franciszek\LocalFiles\Python\labpy_doc\img\path1715.png"
+       inkscape:export-xdpi="283.91446"
+       inkscape:export-ydpi="283.91446" />
+    <path
+       d="m 20.088207,107.71806 c -0.140181,0 -0.280359,0.0434 -0.366821,0.1299 -1.009381,1.00939 -1.191928,3.04575 -0.547983,4.42703 1.130843,-1.37826 2.294114,-3.41453 1.281625,-4.42703 -0.08646,-0.0864 -0.226641,-0.1299 -0.366821,-0.1299 z m -0.914804,4.55693 c -0.82205,-4.08237 -0.411025,-2.04118 0,0 z"
+       style="font-size:8.46667px;line-height:1.25;font-family:Bahnschrift;-inkscape-font-specification:'Bahnschrift, Normal';text-align:end;letter-spacing:0px;word-spacing:0px;text-anchor:end;fill:#22bcfd;fill-opacity:1;stroke-width:0.264583"
+       id="path3362"
+       inkscape:export-filename="C:\Users\Franciszek\LocalFiles\Python\labpy_doc\img\path1715.png"
+       inkscape:export-xdpi="283.91446"
+       inkscape:export-ydpi="283.91446" />
+  </g>
+</svg>
