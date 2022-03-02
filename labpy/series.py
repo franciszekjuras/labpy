@@ -53,8 +53,8 @@ class Series:
             # Assume x is Series-like and try to copy attributes
             x = np.asarray(y.x)
             y = np.asarray(y.y)
-        self._x: np.ndarray = Series.calc_x(y, x, freq, x0)
         self._y: np.ndarray = np.asarray(y)
+        self._x: np.ndarray = Series.calc_x(self._y, x, freq, x0)
 
     def copy(self):
         return Series(self._y.copy(), self._x.copy())
@@ -95,6 +95,10 @@ class Series:
         if(y.shape != self._x.shape):
             raise ValueError(f"Array y (shape={y.shape}) should be of the same shape as x (shape={self._x.shape})")
         self._y = y
+
+    @property
+    def span(self):
+        return self._x[-1] - self._x[0] + self.dx
 
     @property
     def range(self):
@@ -165,6 +169,11 @@ class Series:
         i1 = min(Series.find_idx(end, r), s)
         return Series(self._y[i0:i1], self._x[i0:i1])
 
+    def index(self, v):
+        '''Find index corresponding to `v` in `x` array,
+        i.e. translate ordering value (like time) to index in underlying arrays'''
+        return Series.find_idx(v, self.range)
+
     def __repr__(self):
         return f"D = {self.range} y = {self._y}"
 
@@ -211,10 +220,11 @@ class Series:
             raise ValueError("Either x or freq should be specified")
         if freq is not None:
             x = y.size / freq
-        if not isinstance(x, np.ndarray):
+        if isinstance(x, (float, int)):
             l, r = x0, x0 + x
             x = np.linspace(l, r, y.size, endpoint=False)
         else:
+            x = np.asarray(x)
             if x.ndim != 1:
                 raise ValueError(f"Array x (dim={x.ndim}), should be one-dimensional")
             if(x.size != y.size):

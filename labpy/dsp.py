@@ -10,10 +10,24 @@ def fft(ser, pad = 1):
         if pad < 1.:
             raise ValueError(f"Padding should be >= 1, is {pad}")
         n = int(ser._x.size * pad)
-        return Series(ft(ser._y, n=n), ftfreq(n, d))
+        res = Series(ft(ser._y, n=n), ftfreq(n, d))
+        t0 = ser.x[0]
+        if t0 != 0.:
+            res.y *= np.exp(-2j * np.pi * t0 * res.x)
+        return res
 
 def filter(ser, ker):
         return Series(signal.convolve(ser._y, ker, mode='same'), ser._x)
+
+def fwhm(ser, pos):
+    '''Find FWHM (full width at half maximum) around peak at position `pos`'''
+    idx = ser.index(pos)
+    hm = ser.y[idx] / 2
+    il = np.where(ser.y[:idx] < hm)[0][-1]
+    ir = np.where(ser.y[idx:] < hm)[0][0] + idx
+    w = ser.x[ir] - ser.x[il]
+    return w
+
 
 def project(ser, t0, lag=None, forward=False, taps=None, trend='c', info={}):
     try:

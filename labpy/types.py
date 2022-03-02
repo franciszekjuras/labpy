@@ -13,12 +13,12 @@ class DataList(list):
             return [[el[id] for el in super(DataList, self).__iter__()] for id in idx]
         else:
             return super().__getitem__(idx)
-    def __repr__(self) -> str:
-        resp = 'Meta:\n' + self.meta.__repr__()
+    def __str__(self) -> str:
+        resp = 'Meta:\n' + str(self.meta)
         if len(self) < 3:
-            resp += '\nData:\n' +  super().__repr__()
+            resp += '\nData:\n' +  str(super())
         else:
-            resp += '\nData:\n' + self[0].__repr__() + f'\n... {len(self) - 2} ...\n' + self[-1].__repr__()
+            resp += '\nData:\n' + str(self[0]) + f'\n... {len(self) - 2} ...\n' + str(self[-1])
         return resp
     @property
     def meta(self):
@@ -97,11 +97,11 @@ class NestedDict(dict):
         for k, v in dict(*args, **kwargs).items():
             self[k] = v
 
-    def __repr__(self):
+    def __str__(self):
         if len(self.shadow) == 0:
-            return super().__repr__()
+            return str(super())
         else:
-            return super().__repr__() + '\nshadow: ' + self.shadow.__repr__()
+            return str(super()) + '\nshadow: ' + str(self.shadow)
 
 class Average:
 
